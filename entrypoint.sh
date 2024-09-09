@@ -8,7 +8,7 @@ fi
 
 # Scan the dependencies
 echo "Generating SBOM for Node.js..."
-cyclonedx-npm --output-format json --output-file sbom-node.json
+cyclonedx-npm --output-format json --output-file sbom-node.json 2>&1
 echo "Done"
 
 # Check that the Node.js SBOM file exists and has data in it

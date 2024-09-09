@@ -30,4 +30,4 @@ WORKDIR /github/workspace
 # Set working directory and copy in the entrypoint script
 COPY ./entrypoint.sh .
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT [ "entrypoint.sh" ]

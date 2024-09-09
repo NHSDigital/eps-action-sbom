@@ -1,4 +1,4 @@
-# EPS cfn-lint action
+# EPS SBOM scanning action
 
 This action generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found.
 

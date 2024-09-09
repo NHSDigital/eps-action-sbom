@@ -44,7 +44,7 @@ else
 fi
 
 # Check raised NPM issues
-/check-sbom-issues-against-ignores.sh node-sbom-analysis.json ignored_security_issues.json
+/check-sbom-issues-against-ignores.sh ./node-sbom-analysis.json /ignored_security_issues.json
 
 # Check raised Python issues
-/check-sbom-issues-against-ignores.sh python-sbom-analysis.json ignored_security_issues.json
+/check-sbom-issues-against-ignores.sh ./python-sbom-analysis.json /ignored_security_issues.json

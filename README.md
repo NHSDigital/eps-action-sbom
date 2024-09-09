@@ -16,5 +16,5 @@ None
 
 ```
       - name: Create and scan SBOM
-        uses: anthony-nhs/eps-action-sbom@v1
+        uses: NHSDigital/eps-action-sbom@v1
 ```

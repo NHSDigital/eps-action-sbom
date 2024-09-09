@@ -26,7 +26,6 @@ RUN npm install -g @cyclonedx/cyclonedx-npm@${CYCLONEDX_VERSION}
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
     
 # Set working directory and copy in the entrypoint script
-WORKDIR /app
 COPY ./entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]

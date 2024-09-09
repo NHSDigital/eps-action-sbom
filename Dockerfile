@@ -29,6 +29,8 @@ WORKDIR /github/workspace
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
+COPY check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
+COPY ignored_security_issues.json /ignored_security_issues.json
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/entrypoint.sh"]

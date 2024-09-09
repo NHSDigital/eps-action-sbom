@@ -1,7 +1,8 @@
 # EPS cfn-lint action
 
-This action runs cfn-lint for all yaml files under cloudformation or SAMtemplates folders.   
-If errors are found then it exits with an error
+This action generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found.
+
+Specific vulnerabilities can be ignored by adding their ID to the ignore file in this repository: `ignored_security_issues.json`.
 
 ## Inputs
 
@@ -14,6 +15,6 @@ None
 ## Example usage
 
 ```
-      - name: Run cfn lint
-        uses: anthony-nhs/poc-cfn-lint@main
+      - name: Create and scan SBOM
+        uses: anthony-nhs/eps-action-sbom@v1
 ```

@@ -25,7 +25,7 @@ RUN npm install -g @cyclonedx/cyclonedx-npm@${CYCLONEDX_VERSION}
 # Install Grype
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-WORKDIR /app
+WORKDIR /github/workspace
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh

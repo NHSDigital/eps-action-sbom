@@ -1,0 +1,6 @@
+# action.yml
+name: 'EPS SBOM'
+description: 'Create SBOMs, and scan for security risks.'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'

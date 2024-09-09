@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@cyclonedx/cyclonedx-npm": "^1.19.3"
+  }
+}

@@ -121,9 +121,30 @@ teardown() {
     assert_output --partial "GHSA-8rmg-jf7p-4p22"
 }
 
-@test "Fails when a known python threat is encountered" {
+@test "Fails when a known python pip threat is encountered" {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/github/workspace eps-sbom
     assert_failure
 
     assert_output --partial "GHSA-4jcv-vp96-94xr"
+}
+
+@test "Passes when an ignored issue is encountered - python pip" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/github/workspace eps-sbom
+    assert_success
+    assert_output --partial "GHSA-4jcv-vp96-94xr"
+}
+
+@test "Fails when a known python poetry threat is encountered" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-poetry-only:/github/workspace eps-sbom
+    assert_failure
+
+    assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "GHSA-5wvp-7f3h-6wmm"
+}
+
+@test "Passes when an ignored issue is encountered - python poetry" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/github/workspace eps-sbom
+    assert_success
+    assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "GHSA-5wvp-7f3h-6wmm"
 }

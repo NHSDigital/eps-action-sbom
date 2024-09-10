@@ -5,13 +5,17 @@ IGNORED_ISSUES_FILE="$1"
 SCAN_RESULTS_FILE="$2"
 
 # Check if files exist
-if [[ ! -f "$IGNORED_ISSUES_FILE" || ! -f "$SCAN_RESULTS_FILE" ]]; then
-  echo "Error: One or both of the required files do not exist."
-  exit 1
+if [[ ! -f "$SCAN_RESULTS_FILE" ]]; then
+  echo "Skipping scanning SBOM issues: missing the scan results file"
+  exit 0
 fi
 
-# Read ignored issues into an array
-mapfile -t IGNORED_ISSUES < <(jq -r '.[]' "$IGNORED_ISSUES_FILE")
+# Read ignored issues into an array. Default to ignoring no issues.
+if [[ -f "$IGNORED_ISSUES_FILE" ]]; then
+  mapfile -t IGNORED_ISSUES < <(jq -r '.[]' "$IGNORED_ISSUES_FILE")
+else
+  IGNORED_ISSUES=()
+fi
 
 # Read scan results and check for critical vulnerabilities
 CRITICAL_FOUND=false

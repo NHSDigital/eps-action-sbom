@@ -1,50 +1,47 @@
 #!/bin/sh -l
 
-# Check if the Node.js SBOM file exists. If it does, remove it and create a new one.
-if [ -f "sbom-node.json" ]; then
-    echo "Node.js SBOM file exists. Removing..."
-    rm sbom-node.json
-fi
+# Remove any existing SBOMs
+rm -f ./sbom*.json
 
-# Scan the dependencies
-echo "Generating SBOM for Node.js..."
-cyclonedx-npm --output-format json --output-file sbom-node.json
-echo "Done"
-
-# Check that the Node.js SBOM file exists and has data in it
-if [ -s "sbom-node.json" ]; then
-    echo "Node.js SBOM file exists and has data. Scanning with Grype..."
-    grype sbom:sbom-node.json -o json > node-sbom-analysis.json
+# Scan the dependencies for NPM
+if [ -f "package.json" ] && [ -f "package-lock.json" ]; then
+    echo "Generating SBOM for Node.js..."
+    # The node_modules directory is not needed for generating the SBOM
+    npm install
+    cyclonedx-npm --output-format json --output-file sbom-node.json
     echo "Done"
 else
-    echo "Error: Node.js SBOM file does not exist or is empty."
-    exit 1
+    echo "package.json and package-lock.json not found. Cannot generate Node.js SBOM."
 fi
 
 # Repeat the above steps for Python
+# Check if pyproject.toml (Poetry) or requirements.txt exists
+if [ -f "pyproject.toml" ]; then
+    echo "Detected Poetry project. Generating SBOM using Poetry..."
+    cyclonedx-py poetry > sbom-python-poetry.json
+fi 
 
-# Check if the Python SBOM file exists. If it does, remove it and create a new one.
-if [ -f "sbom-python.json" ]; then
-    echo "Python SBOM file exists. Removing..."
-    rm sbom-python.json
+if [ -f "requirements.txt" ]; then
+    echo "Detected requirements.txt. Generating SBOM using pip..."
+    cyclonedx-py requirements > sbom-python-pip.json
 fi
 
-echo "Generating SBOM for Python..."
-cyclonedx-py poetry > sbom-python.json
 echo "Done"
 
-# Check that the Python SBOM file exists and has data in it
-if [ -s "sbom-python.json" ]; then
-    echo "Python SBOM file exists and has data. Scanning with Grype..."
-    grype sbom:sbom-python.json -o json > python-sbom-analysis.json
-    echo "Done"
-else
-    echo "Error: Python SBOM file does not exist or is empty."
-    exit 1
-fi
+# For each sbom*.json file, scan it with Grype
+for sbom in ./sbom*.json; do
+    if [ -s "$sbom" ]; then
+        echo "$sbom file exists and has data. Scanning with Grype..."
+        grype "sbom:$sbom" -o json > "$(basename "$sbom" .json)-analysis.json"
+        echo "Done"
+    fi
+done
 
-# Check raised NPM issues
-/check-sbom-issues-against-ignores.sh /ignored_security_issues.json ./node-sbom-analysis.json
-
-# Check raised Python issues
-/check-sbom-issues-against-ignores.sh /ignored_security_issues.json ./python-sbom-analysis.json
+# Then compare to ignored issues
+for analysis in ./sbom*-analysis.json; do
+    if [ -s "$analysis" ]; then
+        echo "$analysis file exists and has data. Comparing to ignored issues..."
+        /check-sbom-issues-against-ignores.sh ./ignored-issues.json "$analysis"
+        echo "Done"
+    fi
+done

@@ -44,10 +44,9 @@ error_occurred=false
 for analysis in ./sbom*-analysis.json; do
     if [ -s "$analysis" ]; then
         echo "$analysis file exists and has data. Comparing to ignored issues..."
-        /check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"
         
         # Check the exit status of the last command
-        if [ $? -ne 0 ]; then
+        if ! /check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"; then
             echo "Error: check-sbom-issues-against-ignores.sh failed for $analysis"
             error_occurred=true
         else

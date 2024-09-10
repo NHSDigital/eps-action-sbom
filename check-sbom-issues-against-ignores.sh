@@ -43,6 +43,7 @@ done < <(jq -c '.matches[] | select(.vulnerability.severity == "Critical")' "$SC
 
 # Exit with error if critical vulnerability is found
 if [[ "$CRITICAL_FOUND" == true ]]; then
+  echo "ERROR: Address the critical vulnerabilities before proceeding."
   exit 1
 fi
 

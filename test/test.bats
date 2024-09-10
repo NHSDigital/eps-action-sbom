@@ -89,3 +89,41 @@ teardown() {
         return 1
     fi
 }
+
+@test "Can generate issue-free SBOM for Pip and Poetry" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-poetry:/github/workspace eps-sbom
+
+    if [ ! -f "test/no-issues/python-pip-poetry/sbom-python-pip.json" ]; then
+        echo "Error: sbom-python-pip.json file not found." >&2
+        return 1
+    fi
+
+    if [ ! -f "test/no-issues/python-pip-poetry/sbom-python-poetry.json" ]; then
+        echo "Error: sbom-python-poetry.json file not found." >&2
+        return 1
+    fi
+
+    if [ -f "test/no-issues/python-pip-poetry/sbom-node.json" ]; then
+        echo "Error: sbom-node.json file should not be created." >&2
+        return 1
+    fi
+}
+
+@test "Fails when a known NPM threat is encountered" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/npm-only:/github/workspace eps-sbom
+    assert_failure
+    assert_output --partial "GHSA-8rmg-jf7p-4p22"
+}
+
+@test "Passes when an ignored issues is encountered - npm" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-npm-issue:/github/workspace eps-sbom
+    assert_success
+    assert_output --partial "GHSA-8rmg-jf7p-4p22"
+}
+
+@test "Fails when a known python threat is encountered" {
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/github/workspace eps-sbom
+    assert_failure
+
+    assert_output --partial "GHSA-4jcv-vp96-94xr"
+}

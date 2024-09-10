@@ -37,11 +37,29 @@ for sbom in ./sbom*.json; do
     fi
 done
 
+# Initialize an error flag
+error_occurred=false
+
 # Then compare to ignored issues
 for analysis in ./sbom*-analysis.json; do
     if [ -s "$analysis" ]; then
         echo "$analysis file exists and has data. Comparing to ignored issues..."
-        /check-sbom-issues-against-ignores.sh ./ignored-issues.json "$analysis"
-        echo "Done"
+        /check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"
+        
+        # Check the exit status of the last command
+        if [ $? -ne 0 ]; then
+            echo "Error: check-sbom-issues-against-ignores.sh failed for $analysis"
+            error_occurred=true
+        else
+            echo "Done"
+        fi
     fi
 done
+
+# Exit with an error if any errors occurred
+if [ "$error_occurred" = true ]; then
+    exit 1
+else
+    echo "All checks completed successfully."
+    exit 0
+fi

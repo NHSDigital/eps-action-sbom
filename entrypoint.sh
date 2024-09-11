@@ -1,5 +1,7 @@
 #!/bin/sh -l
 
+set -e
+
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 
@@ -37,6 +39,8 @@ for sbom in ./sbom*.json; do
     fi
 done
 
+# Don't exit on failure until we check all files.
+set +e
 # Initialize an error flag
 error_occurred=false
 

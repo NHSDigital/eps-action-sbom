@@ -4,7 +4,6 @@ description: 'Create SBOMs, and scan for security risks.'
 inputs:
   node_version:
     description: 'Node.js version to use'
-    default: '18'
     required: true
   cyclone_python_version:
     description: 'CycloneDX Python version to use'
@@ -17,8 +16,7 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  env:
-    NODE_VERSION: ${{ inputs.node_version }}
-    CYCLONE_PYTHON_VERSION: ${{ inputs.cyclone_python_version }}
-    CYCLONE_NPM_VERSION: ${{ inputs.cyclone_npm_version }}
-      
+  args:
+    - NODE_VERSION=${{ inputs.node_version }}
+    - CYCLONE_PYTHON_VERSION=${{ inputs.cyclone_python_version }}
+    - CYCLONE_NPM_VERSION=${{ inputs.cyclone_npm_version }}

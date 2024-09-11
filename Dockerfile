@@ -2,9 +2,9 @@
 FROM python:3.10-slim
 
 # Set environment variables for versions with default values
-ENV NODE_VERSION=${NODE_VERSION:-18}
-ENV CYCLONE_PYTHON_VERSION=${CYCLONE_PYTHON_VERSION:-4.5.0}
-ENV CYCLONE_NPM_VERSION=${CYCLONE_NPM_VERSION:-1.19.3}
+ARG NODE_VERSION=18
+ARG CYCLONE_PYTHON_VERSION=4.5.0
+ARG CYCLONE_NPM_VERSION=1.19.3
 
 # Install system dependencies and tools
 RUN apt-get update && \

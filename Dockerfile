@@ -3,7 +3,6 @@ ARG PYTHON_VERSION=3.10
 FROM python:${PYTHON_VERSION}-slim
 
 # Set environment variables for versions with default values
-ARG POETRY_VERSION=1.8.0
 ARG NODE_VERSION=18
 ARG CYCLONE_PYTHON_VERSION=4.5.0
 ARG CYCLONE_NPM_VERSION=1.19.3
@@ -22,7 +21,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
 
 # Install cyclonedx
 RUN pip install cyclonedx-bom==${CYCLONE_PYTHON_VERSION}
-RUN npm install -g @cyclonedx/cyclonedx-npm@${CYCLONEDX_VERSION}
+RUN npm install -g @cyclonedx/cyclonedx-npm@${CYCLONE_NPM_VERSION}
 
 # Install Grype
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin

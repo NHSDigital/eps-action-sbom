@@ -38,12 +38,14 @@ jobs:
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared 
     
-      # - name: install bats
-      #   run: sudo apt update; sudo apt install bats bats-assert bats-support
+      - name: install bats
+        run: sudo apt update; sudo apt install bats bats-assert bats-support bats-file
 
       - name: run lint
         run: make lint
 
-      # - name: run unit tests
-      #   run: make test
+      - name: run unit tests
+        run: make test
+        env:
+          LOCAL_WORKSPACE_FOLDER: ${{ github.workspace }}
 

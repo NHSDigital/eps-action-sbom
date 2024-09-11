@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image, with version specified by ARG
-FROM python:${PYTHON_VERSION}-slim
+FROM python:3.10-slim
 
 # Set environment variables for versions with default values
 ENV NODE_VERSION=${NODE_VERSION:-18}

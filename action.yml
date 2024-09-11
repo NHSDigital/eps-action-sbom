@@ -2,18 +2,10 @@
 name: 'EPS SBOM'
 description: 'Create SBOMs, and scan for security risks.'
 inputs:
-  python_version:
-    description: 'Python version to use'
-    default: '3.10'
-    required: false
-  poetry_version:
-    description: 'Poetry version to use'
-    default: '1.8.0'
-    required: false
   node_version:
     description: 'Node.js version to use'
     default: '18'
-    required: false
+    required: true
   cyclone_python_version:
     description: 'CycloneDX Python version to use'
     default: '4.5.0'
@@ -25,10 +17,8 @@ inputs:
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - PYTHON_VERSION=${{ inputs.python_version }}
-    - POETRY_VERSION=${{ inputs.poetry_version }}
-    - NODE_VERSION=${{ inputs.node_version }}
-    - CYCLONE_PYTHON_VERSION=${{ inputs.cyclone_python_version }}
-    - CYCLONE_NPM_VERSION=${{ inputs.cyclone_npm_version }}
+  env:
+    NODE_VERSION: ${{ inputs.node_version }}
+    CYCLONE_PYTHON_VERSION: ${{ inputs.cyclone_python_version }}
+    CYCLONE_NPM_VERSION: ${{ inputs.cyclone_npm_version }}
       

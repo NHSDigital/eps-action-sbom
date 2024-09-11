@@ -39,7 +39,7 @@ jobs:
           PYTHON_CONFIGURE_OPTS: --enable-shared 
     
       - name: install bats
-        run: sudo apt update; sudo apt install bats bats-assert bats-support
+        run: sudo apt update; sudo apt install bats bats-assert bats-support bats-file
 
       - name: run lint
         run: make lint

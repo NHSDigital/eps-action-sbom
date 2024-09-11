@@ -1,5 +1,6 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+# Use an official Python runtime as a parent image, with version specified by ARG
+ARG PYTHON_VERSION=3.10
+FROM python:${PYTHON_VERSION}-slim
 
 # Set environment variables for versions with default values
 ARG POETRY_VERSION=1.8.0

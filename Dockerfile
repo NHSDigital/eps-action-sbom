@@ -3,7 +3,7 @@ FROM python:3.10-slim
 
 # Set environment variables for versions with default values
 ARG POETRY_VERSION=1.8.0
-ARG NODE_VERSION=18
+ARG NODE_VERSION=20
 ARG CYCLONE_PYTHON_VERSION=4.5.0
 ARG CYCLONE_NPM_VERSION=1.19.3
 

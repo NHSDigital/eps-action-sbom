@@ -7,6 +7,9 @@ setup() {
     # Remove all existing test output: *sbom*.json files
     rm -f test/**/*sbom*.json
     rm -rf test/**/node_modules
+
+    # Rename all the package*.json files to be discoverable
+    find ./test -type f -name 'test-package*.json' -exec sh -c 'mv "$0" "${0%/*}/${0##*/test-}"' {} \;
 }
 
 teardown() {

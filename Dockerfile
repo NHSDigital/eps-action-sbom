@@ -61,4 +61,6 @@ ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh
 # Set the umask so that the files created by docker can be universally accessed. Lets the tests successfully teardown.
 RUN echo "umask 000" >> /etc/profile
 
+ENV ASDF_DIR="/root/.asdf"
+
 ENTRYPOINT ["/entrypoint.sh"]

@@ -15,7 +15,8 @@ RUN apt-get update \
 # Install ASDF
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
     echo '. /root/.asdf/asdf.sh' >> ~/.bashrc; \
-    echo '. /root/.asdf/completions/asdf.bash' >> ~/.bashrc; 
+    echo '. /root/.asdf/completions/asdf.bash' >> ~/.bashrc; \
+    echo 'PATH="$PATH:/root/.asdf/bin/"' >> ~/.bashrc;
 
 ENV PATH="$PATH:/root/.asdf/bin/"
 

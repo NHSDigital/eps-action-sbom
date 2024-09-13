@@ -15,7 +15,8 @@ cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 
 # Stupid github stupidly overrides the stupid asdf directory, and stupidly
 # I can't find a way to set it back to the proper stupid value. Hard-code the stupid thing
-export ASDF_DIR="/root/.asdf/"
+# shellcheck source=/dev/null
+. /root/.bashrc
 asdf reshim
 
 # Scan the dependencies for NPM

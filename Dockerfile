@@ -43,7 +43,7 @@ ADD node20/.tool-versions /node_versions/node20/.tool-versions
 WORKDIR /node_versions/node20
 RUN asdf install
 RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
-RUN asdf exec python -m pip install cyclonedx-bom
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
 
 
 # Set the workdir to what we'll actually use
@@ -51,14 +51,15 @@ WORKDIR /working
 
 # And install cyclonedx in this asdf environment
 RUN echo "python 3.12.5" >> .tool-versions
-RUN asdf exec python -m pip install cyclonedx-bom
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
 RUN rm .tool-versions
 
 # Code file to execute when the docker container starts up
 ADD entrypoint.sh /entrypoint.sh
 ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
 
-# Set the umask so that the files created by docker can be universally accessed. Lets the tests successfully teardown.
+# Set the umask so that the files created by docker can be universally accessed. 
+# Lets the tests successfully teardown.
 RUN echo "umask 000" >> /etc/profile
 
 ENTRYPOINT ["/entrypoint.sh"]

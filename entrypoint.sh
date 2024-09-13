@@ -6,15 +6,11 @@ set -e
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 
-pwd
-ls -lah
-
 # Get the .tool-versions for the correct node
 NODE_VERSION=${1:-'20'}
 cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 
 asdf reshim
-asdf list
 
 # Scan the dependencies for NPM
 if [ -f "package.json" ] && [ -f "package-lock.json" ]; then

@@ -56,4 +56,8 @@ RUN rm .tool-versions
 # Code file to execute when the docker container starts up
 ADD entrypoint.sh /entrypoint.sh
 ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
+
+# Set the umask so that the files created by docker can be universally accessed. Lets the tests successfully teardown.
+RUN echo "umask 000" >> /etc/profile
+
 ENTRYPOINT ["/entrypoint.sh"]

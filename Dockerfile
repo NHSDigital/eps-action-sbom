@@ -29,25 +29,31 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
 # Install Grype
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-# These are the actual runner scripts
-ADD entrypoint.sh /entrypoint.sh
-ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
-
-
 # For each supported npm version, asdf install, and install cyclonedx (latest versions)
 
-ADD node18/.tool-versions $HOME/node18/.tool-versions
-WORKDIR $HOME/node18
+ADD node18/.tool-versions /node_versions/node18/.tool-versions
+WORKDIR /node_versions/node18
 RUN asdf install
-# RUN asdf reshim python && pip install cyclonedx-bom
-ENV ASDF_DIR="/root/.asdf/"
-RUN . $HOME/.asdf/asdf.sh
-RUN asdf reshim && npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install cyclonedx-bom
 
 
-# # Set the workdir back to the top level
-# WORKDIR /github/workspace
-# # Code file to execute when the docker container starts up
-# ENTRYPOINT ["/entrypoint.sh"]
+ADD node20/.tool-versions /node_versions/node20/.tool-versions
+WORKDIR /node_versions/node20
+RUN asdf install
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install cyclonedx-bom
 
-ENTRYPOINT [ "/usr/bin/bash" ]
+
+# Set the workdir to what we'll actually use
+WORKDIR /working
+
+# And install cyclonedx in this asdf environment
+RUN echo "python 3.12.5" >> .tool-versions
+RUN asdf exec python -m pip install cyclonedx-bom
+RUN rm .tool-versions
+
+# Code file to execute when the docker container starts up
+ADD entrypoint.sh /entrypoint.sh
+ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
+ENTRYPOINT ["/entrypoint.sh"]

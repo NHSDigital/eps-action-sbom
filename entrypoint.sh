@@ -2,15 +2,26 @@
 
 set -e
 
+
 # Remove any existing SBOMs
 rm -f ./sbom*.json
+
+pwd
+ls -lah
+
+# Get the .tool-versions for the correct node
+NODE_VERSION=${1:-'20'}
+cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
+
+asdf reshim
+asdf list
 
 # Scan the dependencies for NPM
 if [ -f "package.json" ] && [ -f "package-lock.json" ]; then
     echo "Generating SBOM for Node.js..."
-    # The node_modules directory is not needed for generating the SBOM
-    npm install
-    cyclonedx-npm --output-format json --output-file sbom-node.json
+    # The node_modules directory is needed for generating the SBOM
+    asdf exec npm install
+    asdf exec cyclonedx-npm --output-format json --output-file sbom-node.json
     echo "Done"
 else
     echo "package.json and package-lock.json not found. Cannot generate Node.js SBOM."
@@ -20,12 +31,12 @@ fi
 # Check if pyproject.toml (Poetry) or requirements.txt exists
 if [ -f "pyproject.toml" ]; then
     echo "Detected Poetry project. Generating SBOM using Poetry..."
-    cyclonedx-py poetry > sbom-python-poetry.json
+    asdf exec cyclonedx-py poetry > sbom-python-poetry.json
 fi 
 
 if [ -f "requirements.txt" ]; then
     echo "Detected requirements.txt. Generating SBOM using pip..."
-    cyclonedx-py requirements > sbom-python-pip.json
+    asdf exec cyclonedx-py requirements > sbom-python-pip.json
 fi
 
 echo "Done"
@@ -64,5 +75,4 @@ if [ "$error_occurred" = true ]; then
     exit 1
 else
     echo "All checks completed successfully."
-    exit 0
 fi

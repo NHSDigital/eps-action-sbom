@@ -6,13 +6,16 @@ set -e
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 
+echo "What's the current user?"
+whoami
+
 # Get the .tool-versions for the correct node
 NODE_VERSION=${1:-'20'}
 cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 
 # Stupid github stupidly overrides the stupid asdf directory, and stupidly
 # I can't find a way to set it back to the proper stupid value. Hard-code the stupid thing
-export ASDF_DIR="/root/.asdf"
+export ASDF_DIR="/root/.asdf/"
 asdf reshim
 
 # Scan the dependencies for NPM

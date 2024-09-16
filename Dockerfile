@@ -46,6 +46,13 @@ RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
 RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
 
 
+ADD node22/.tool-versions /node_versions/node22/.tool-versions
+WORKDIR /node_versions/node22
+RUN asdf install
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
+
+
 # Set the workdir to what we'll actually use
 WORKDIR /working
 

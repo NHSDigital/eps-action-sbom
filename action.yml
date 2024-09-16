@@ -12,3 +12,6 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.node_version }}
+  env:
+    ASDF_DIR: ""
+    ASDF_DATA_DIR: ""

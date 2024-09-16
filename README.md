@@ -11,9 +11,8 @@ Specific vulnerabilities can be ignored by adding their ID to the ignore file in
 
 ## Inputs
 
-```
-"node_version": "20"
-```
+### "node_version"
+
 Used to specify the version of nodeJS used in your project. Versions are mutually incompatible, so a project built with node 18 cannot be analysed using node 20, for example. Allowed versions are `["18", "20", "22"]`. Defaults to "20".
 
 ## Outputs
@@ -25,7 +24,7 @@ None
 ```
 - name: Create and scan SBOM
   uses: NHSDigital/eps-action-sbom@v1
-  inputs:
+  with:
 	node_version: "20"
 ```
 
@@ -41,7 +40,7 @@ Note that this requires the `LOCAL_WORKSPACE_FOLDER` environment variable to be 
 ```
   "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
 ```
-In addition, if you are using a dev container, it must have the docker-in-docker feature installed. This is added to the `devcontainer.json` features field like so:
+In addition, if you are using a dev container, it must have the docker-in-docker feature installed. This is added to the `devcontainer.json` features field:
 ```
     "features": {
       "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {

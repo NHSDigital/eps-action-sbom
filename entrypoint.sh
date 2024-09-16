@@ -6,7 +6,17 @@ set -e
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 
-# Get the .tool-versions for the correct node. Default to 20
+echo "What's the current user?"
+whoami
+echo "Where is the current working directory?"
+pwd
+echo "What is my current asdf setup?"
+echo "ASDF_DIR: ${ASDF_DIR}"
+echo "ASDF_DATA_DIR: ${ASDF_DATA_DIR}"
+echo "which asdf:"
+which asdf
+
+# Get the .tool-versions for the correct node
 NODE_VERSION=${1:-'20'}
 cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 
@@ -17,7 +27,8 @@ cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 if [ -n "${ASDF_DIR}" ]; then
     echo "ASDF_DIR not set. Copying in local installation of asdf..."
     mkdir -p "${ASDF_DIR}"
-    cp -r /root/.asdf "${ASDF_DIR}"
+    cp -r /root/.asdf "${ASDF_DIR}"/.asdf
+    export ASDF_DIR="${ASDF_DIR}"
 fi
 asdf reshim
 

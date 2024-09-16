@@ -28,7 +28,7 @@ if [ -n "${ASDF_DIR}" ]; then
     echo "ASDF_DIR not set. Copying in local installation of asdf..."
     mkdir -p "${ASDF_DIR}"
     cp -r /root/.asdf "${ASDF_DIR}"/.asdf
-    export ASDF_DIR="${ASDF_DIR}"
+    ls -lha "${ASDF_DIR}"
 fi
 asdf reshim
 

@@ -61,7 +61,7 @@ RUN echo "python 3.12.5" >> .tool-versions
 RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
 RUN rm .tool-versions
 
-# Code file to execute when the docker container starts up
+# Files to execute when the docker container starts up
 ADD entrypoint.sh /entrypoint.sh
 ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
 

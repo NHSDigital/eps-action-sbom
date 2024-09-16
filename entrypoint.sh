@@ -20,6 +20,8 @@ which asdf
 NODE_VERSION=${1:-'20'}
 cp /node_versions/node"${NODE_VERSION}"/.tool-versions .
 
+
+cp -r /root/.asdf /home/runner/.asdf
 asdf reshim
 
 # Scan the dependencies for NPM

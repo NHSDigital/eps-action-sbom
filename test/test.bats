@@ -30,7 +30,7 @@ teardown() {
     find ./test -type d -name 'node_modules' -exec rm -rf {} \;
 
     # Rename package*.json back to test-package*.json
-    find ./test -type d -name 'node_modules' -prune -o -type f -name 'package*.json' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;
+    find ./test/issues -type d -name 'node_modules' -prune -o -type f -name 'package*.json' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;
 
     # Rename pyproject.toml back to test-pyproject.toml
     find ./test/issues -type f -name 'pyproject.toml' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;

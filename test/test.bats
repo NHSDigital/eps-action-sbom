@@ -4,12 +4,22 @@ setup() {
     load '/usr/lib/bats/bats-file/load'
     docker build -t eps-sbom .
 
-    # Remove all existing test output: *sbom*.json files
+    # Remove all existing test output
     find ./test -type f -name 'sbom*' -exec rm -f {} \;
     find ./test -type d -name 'node_modules' -exec rm -rf {} \;
 
-    # Rename all the package*.json files to be discoverable
-    find ./test -type f -name 'test-package*.json' -exec sh -c 'mv "$0" "${0%/*}/${0##*/test-}"' {} \;
+    # For tests which are expected to pass, we want dependabot to bump the versions defined in the test files.
+    # However, some tests need to fail against an external database, so we freeze the versions in those tests.
+    # To do so, we rename the files that we don't want dependabot to touch.
+
+    # Rename all the test-package*.json files to package*.json
+    find ./test/issues -type f -name 'test-package*.json' -exec sh -c 'mv "$0" "${0%/*}/${0##*/test-}"' {} \;
+
+    # Rename test-pyproject.toml to pyproject.toml (Poetry)
+    find ./test/issues -type f -name 'test-pyproject.toml' -exec sh -c 'mv "$0" "${0%/*}/${0##*/test-}"' {} \;
+
+    # Rename test-requirements*.txt to requirements*.txt (Pip)
+    find ./test/issues -type f -name 'test-requirements*.txt' -exec sh -c 'mv "$0" "${0%/*}/${0##*/test-}"' {} \;
 
     NODE_VERSION=18
 }
@@ -19,7 +29,14 @@ teardown() {
     find ./test -type f -name '.tool-versions' -exec rm -f {} \;
     find ./test -type d -name 'node_modules' -exec rm -rf {} \;
 
+    # Rename package*.json back to test-package*.json
     find ./test -type d -name 'node_modules' -prune -o -type f -name 'package*.json' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;
+
+    # Rename pyproject.toml back to test-pyproject.toml
+    find ./test/issues -type f -name 'pyproject.toml' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;
+
+    # Rename requirements*.txt back to test-requirements*.txt
+    find ./test/issues -type f -name 'requirements*.txt' -exec sh -c 'mv "$0" "${0%/*}/test-${0##*/}"' {} \;
 }
 
 

@@ -1,6 +1,17 @@
 # action.yml
 name: 'EPS SBOM'
 description: 'Create SBOMs, and scan for security risks.'
+inputs:
+  node_version:
+    description: 'The version of NPM used in the project'
+    required: false
+    default: '20'
+    
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+    - ${{ inputs.node_version }}
+  env:
+    ASDF_DIR: ""
+    ASDF_DATA_DIR: ""

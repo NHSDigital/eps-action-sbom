@@ -46,9 +46,8 @@
           "github.vscode-github-actions"
         ],
         "settings": {
-          "cSpell.words": ["fhir", "Formik", "pino", "serialisation"],
+          "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
         }
       }
     }
   }
-  

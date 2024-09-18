@@ -1,35 +1,72 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
 
-# Set environment variables for versions with default values
-ARG POETRY_VERSION=1.8.0
-ARG NODE_VERSION=18
-ARG CYCLONE_PYTHON_VERSION=4.5.0
-ARG CYCLONE_NPM_VERSION=1.19.3
+RUN apt-get update \
+    && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y dist-upgrade \
+    && apt-get -y install --no-install-recommends htop vim curl git build-essential \
+    libffi-dev libssl-dev libxml2-dev libxslt1-dev libjpeg8-dev libbz2-dev \
+    zlib1g-dev unixodbc unixodbc-dev libsecret-1-0 libsecret-1-dev libsqlite3-dev \
+    jq apt-transport-https ca-certificates gnupg-agent \
+    software-properties-common bash-completion python3-pip make libbz2-dev \
+    libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev liblzma-dev libyaml-dev bats bats-support bats-assert bats-file \
+    python3 python3-pip python3-dev
 
-# Install system dependencies and tools
-RUN apt-get update && \
-    apt-get install -y \
-    curl \
-    gnupg \
-    jq \
-    && rm -rf /var/lib/apt/lists/*
+# Install ASDF
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
+    echo '. /root/.asdf/asdf.sh' >> ~/.bashrc; \
+    echo '. /root/.asdf/completions/asdf.bash' >> ~/.bashrc; \
+    echo 'PATH="$PATH:/root/.asdf/bin/"' >> ~/.bashrc;
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
-    apt-get install -y nodejs
+ENV PATH="$PATH:/root/.asdf/bin/"
 
-# Install cyclonedx
-RUN pip install cyclonedx-bom==${CYCLONE_PYTHON_VERSION}
-RUN npm install -g @cyclonedx/cyclonedx-npm@${CYCLONEDX_VERSION}
+# Install ASDF plugins
+RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
+    asdf plugin add actionlint; \
+    asdf plugin add python; \
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
+    asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 
 # Install Grype
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
 
-WORKDIR /github/workspace
+# For each supported npm version, asdf install, and install cyclonedx (latest versions)
 
-COPY entrypoint.sh /entrypoint.sh
-COPY check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
+ADD node18/.tool-versions /node_versions/node18/.tool-versions
+WORKDIR /node_versions/node18
+RUN asdf install
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install cyclonedx-bom
 
-# Code file to execute when the docker container starts up
+
+ADD node20/.tool-versions /node_versions/node20/.tool-versions
+WORKDIR /node_versions/node20
+RUN asdf install
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
+
+
+ADD node22/.tool-versions /node_versions/node22/.tool-versions
+WORKDIR /node_versions/node22
+RUN asdf install
+RUN asdf exec npm install -g @cyclonedx/cyclonedx-npm
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
+
+
+# Set the workdir to what we'll actually use
+WORKDIR /working
+
+# And install cyclonedx in this asdf environment
+RUN echo "python 3.12.5" >> .tool-versions
+RUN asdf exec python -m pip install --no-cache-dir cyclonedx-bom
+RUN rm .tool-versions
+
+# Files to execute when the docker container starts up
+ADD entrypoint.sh /entrypoint.sh
+ADD check-sbom-issues-against-ignores.sh /check-sbom-issues-against-ignores.sh 
+
+# Set the umask so that the files created by docker can be universally accessed. 
+# Lets the tests successfully teardown.
+RUN echo "umask 000" >> /etc/profile
+
 ENTRYPOINT ["/entrypoint.sh"]

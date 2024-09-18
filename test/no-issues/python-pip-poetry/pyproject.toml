@@ -7,11 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.8.15"
-flask = "2.3.2"
-requests = "2.32.2"
-pandas = "2.0.3"
-numpy = "1.24.4"
-beautifulsoup4 = "4.12.2"
+mindsdb = "23.12.4.1"
 
 
 [build-system]

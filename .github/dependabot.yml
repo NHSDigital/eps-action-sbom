@@ -17,7 +17,7 @@ updates:
   # python  #########################
   ###################################
   - package-ecosystem: "pip"
-    directory: "/"
+    directory: "/tests/no-issues/"
     schedule:
       interval: "daily"
     versioning-strategy: increase
@@ -28,7 +28,7 @@ updates:
   # nodejs  #########################
   ###################################
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/tests/no-issues/"
     schedule:
       interval: "daily"
     versioning-strategy: increase

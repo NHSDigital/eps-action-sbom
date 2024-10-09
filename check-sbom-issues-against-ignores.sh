@@ -56,6 +56,8 @@ done < <(jq -c '.matches[] | select(.vulnerability.severity == "Critical")' "$SC
 # Exit with error if critical vulnerability is found
 if [[ "$CRITICAL_FOUND" == true ]]; then
   echo "ERROR: Address the critical vulnerabilities before proceeding."
+  echo "To add this to an ignore list, add the vulnerability to ignored_security_issues.json"
+  echo "See https://github.com/NHSDigital/eps-action-sbom for more details"
   exit 1
 fi
 

@@ -23,20 +23,32 @@ CRITICAL_FOUND=false
 # Loop through vulnerabilities in the scan results
 while IFS= read -r MATCH; do
   VULN_ID=$(echo "$MATCH" | jq -r '.vulnerability.id')
+  DESCRIPTION=$(echo "$MATCH" | jq -r '.vulnerability.description')
+  DATASOURCE=$(echo "$MATCH" | jq -r '.vulnerability.dataSource')
 
   # Check if the vulnerability ID is in the ignored list
   FOUND=false
   for IGNORED in "${IGNORED_ISSUES[@]}"; do
     if [[ "$IGNORED" == "$VULN_ID" ]]; then
       FOUND=true
+      echo
+      echo "***************************"
       echo "Warning: Ignored vulnerability found: $VULN_ID"
+      echo "Warning: Description: $DESCRIPTION"
+      echo "Warning: dataSource: $DATASOURCE"
+      echo "***************************"
       break
     fi
   done
 
   # If the vulnerability is not found in the ignored list, mark critical as found
   if [[ "$FOUND" == false ]]; then
+    echo
+    echo "***************************"
     echo "Error: Critical vulnerability found that is not in the ignore list: $VULN_ID"
+    echo "Error: Description: $DESCRIPTION"
+    echo "Error: dataSource: $DATASOURCE"
+    echo "***************************"
     CRITICAL_FOUND=true
   fi
 done < <(jq -c '.matches[] | select(.vulnerability.severity == "Critical")' "$SCAN_RESULTS_FILE")

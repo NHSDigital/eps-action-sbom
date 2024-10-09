@@ -1,4 +1,4 @@
-.PHONY: install build test publish release submodule_update
+.PHONY: install build test publish release submodule_update check-licenses
 
 test:
 	bats test/test.bats

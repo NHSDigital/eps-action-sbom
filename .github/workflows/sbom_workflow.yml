@@ -26,6 +26,18 @@ jobs:
       # Set up NPM token if provided
       - name: Set up NPM token
         run: |
+          echo "Setting up .npmrc with provided GITHUB_TOKEN..."
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> /home/runner/.npmrc
+          echo "@nhsdigital:registry=https://npm.pkg.github.com" >> /home/runner/.npmrc
+          echo "NPM token setup complete."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+      - name: Build and run Dev Container
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd:  |
             echo "::group::Building and running the Dev Container"
             # Download the SBOM scan script
             curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/run-sbom-scan.sh -o run-sbom-scan.sh
@@ -36,20 +48,6 @@ jobs:
             # Execute the script
             ./run-sbom-scan.sh
             echo "::endgroup::"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-      - name: Build and run Dev Container
-        uses: devcontainers/ci@v0.3
-        with:
-          runCmd:  |
-            # Download the SBOM scan script
-            curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/run-sbom-scan.sh -o run-sbom-scan.sh
-            chmod +x ./run-sbom-scan.sh
-
-            # Execute the script
-            ./run-sbom-scan.sh
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

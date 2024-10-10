@@ -29,7 +29,9 @@ jobs:
           mkdir -p /home/runner/.ssh
           mkdir -p /home/runner/.gnupg
           touch /home/runner/.npmrc
-          touch /home/runner/.envrc
+          # Place this in the working dir, so it gets copied in
+          touch .envrc
+          ls -lah .
 
       # Set up NPM token if provided
       - name: Set up NPM token

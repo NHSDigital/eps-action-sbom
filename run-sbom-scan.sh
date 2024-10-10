@@ -2,13 +2,6 @@
 
 set -e
 
-# Default to '/workspaces' if WORKING_DIRECTORY is not set
-WORKING_DIRECTORY=${WORKING_DIRECTORY:-/workspaces}
-
-# Change to the specified working directory
-cd "$WORKING_DIRECTORY" || exit 1
-echo "Changed to working directory: $WORKING_DIRECTORY"
-
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 

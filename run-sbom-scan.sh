@@ -8,14 +8,14 @@ rm -f ./sbom*.json
 asdf install
 
 # Set up NPM token if provided
-if [ -n "$NPM_AUTH_TOKEN" ]; then
-  echo "Setting up .npmrc with provided NPM_AUTH_TOKEN..."
+if [ -n "$GITHUB_TOKEN" ]; then
+  echo "Setting up .npmrc with provided GITHUB_TOKEN..."
   mkdir -p $HOME/.npm
-  echo "//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}" >> $HOME/.npmrc
+  echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> $HOME/.npmrc
   echo "@nhsdigital:registry=https://npm.pkg.github.com" >> $HOME/.npmrc
   echo "NPM token setup complete."
 else
-  echo "No NPM_AUTH_TOKEN provided; skipping NPM authentication setup."
+  echo "No GITHUB_TOKEN provided; skipping NPM authentication setup."
 fi
 
 # Run make install

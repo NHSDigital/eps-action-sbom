@@ -6,6 +6,12 @@ on:
         BRANCH_NAME:
             required: true
             type: string
+        working_directory:
+            description: 'The working directory inside the devcontainer'
+            type: string
+            required: false
+            default: '/workspaces'
+
 jobs:
   sbom_scan:
     runs-on: ubuntu-latest
@@ -16,6 +22,14 @@ jobs:
           ref: ${{ inputs.BRANCH_NAME }}
           fetch-depth: 0
 
+      # Ensure required directories and files exist
+      - name: Ensure required directories and files exist
+        run: |
+          mkdir -p /home/runner/.aws
+          mkdir -p /home/runner/.ssh
+          mkdir -p /home/runner/.gnupg
+          touch /home/runner/.npmrc
+
       - name: Build and run Dev Container
         uses: devcontainers/ci@v0.3
         with:
@@ -24,7 +38,8 @@ jobs:
             curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/run-sbom-scan.sh -o run-sbom-scan.sh
             chmod +x ./run-sbom-scan.sh
 
-            # Execute the script
-            ./run-sbom-scan.sh
+                # Execute the script
+                ./run-sbom-scan.sh
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            WORKING_DIRECTORY: ${{ inputs.working_directory }}

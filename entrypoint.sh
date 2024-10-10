@@ -13,20 +13,10 @@ if [ -n "${ASDF_DIR}" ]; then
 fi
 asdf reshim
 
-# Install NPM dependencies if package.json exists
-if [ -f "package.json" ]; then
-    echo "Installing NPM dependencies..."
-    asdf exec npm install
-fi
-
-# Install Python dependencies
-if [ -f "pyproject.toml" ]; then
-    echo "Detected Poetry project. Installing dependencies..."
-    asdf exec poetry install
-elif [ -f "requirements.txt" ]; then
-    echo "Detected requirements.txt. Installing dependencies..."
-    asdf exec pip install -r requirements.txt
-fi
+# Build the project. Assumes that we have makefile commands in line with 
+# https://nhsd-confluence.digital.nhs.uk/display/APIMC/Git+repository+checklist
+# If being used with quality-checks workflow, this is redundant!
+make install
 
 # Generate SBOM for NPM packages
 if [ -f "package.json" ]; then

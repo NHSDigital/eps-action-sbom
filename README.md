@@ -1,24 +1,23 @@
 # EPS SBOM scanning action
 
-This action generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found. For python, both `requirements.txt` and Poetry installations are supported.
+This workflow generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found. 
 
-Specific vulnerabilities can be ignored by adding their ID to the ignore file in this repository: `ignored_security_issues.json`, e.g.
+Under the hood, it uses `syft`. The repository's devcontainer is built, the project is installed, and `syft` then scans the whole container to produce a series of SBOM. These are then scanned with `grype`.
+
+Specific vulnerabilities can be ignored for a repository by adding the issue ID to an ignore file in the relevant repository: `ignored_security_issues.json`, e.g.
 ```
 [
 	"GHSA-4jcv-vp96-94xr"
 ]
 ```
 
-## Inputs
+This must be in the root of the project.
 
-### `BRANCH_NAME`
+## Secrets
 
-This is the branch that the checks are being run against - the workflow checks out the latest commit of this branch and creates an SBOM for it. Pass it in like so:
+### `GITHUB_TOKEN`
 
-```
-    with:
-      BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-```
+Some `npm` packages require a github token to access a private repository. This token is assumed to be supplied as a secret, keyed as `GITHUB_TOKEN`
 
 ## Outputs
 
@@ -26,32 +25,16 @@ None
 
 ## Example usage
 
-```
-- name: Create and scan SBOM
-  uses: NHSDigital/eps-action-sbom@v1
-  with:
-	node_version: "20"
-```
+Simply call the job in a workflow file. For example,
 
-This can be used as a `makefile` target like so:
 ```
-sbom:
-	mkdir -p ~/git_actions
-	git -C ~/git_actions/eps-actions-sbom/ pull || git clone https://github.com/NHSDigital/eps-action-sbom.git ~/git_actions/eps-actions-sbom/
-	docker build -t eps-sbom -f ~/git_actions/eps-actions-sbom/Dockerfile ~/git_actions/eps-actions-sbom/
-	docker run -it --rm -v $${LOCAL_WORKSPACE_FOLDER:-.}:/github/workspace eps-sbom
-```
-Note that this requires the `LOCAL_WORKSPACE_FOLDER` environment variable to be set. In VS Code dev containers, this can be added to the `devcontainer.json` file:
-```
-  "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
-```
-In addition, if you are using a dev container, it must have the docker-in-docker feature installed. This is added to the `devcontainer.json` features field:
-```
-    "features": {
-      "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-        "version": "latest",
-        "moby": "true",
-        "installDockerBuildx": "true"
-      }
-    },
+name: SBOM scan PR
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  sbom_scans:
+    uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@v2.0.0
 ```

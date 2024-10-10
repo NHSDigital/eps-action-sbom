@@ -11,9 +11,14 @@ Specific vulnerabilities can be ignored by adding their ID to the ignore file in
 
 ## Inputs
 
-### "node_version"
+### `BRANCH_NAME`
 
-Used to specify the version of nodeJS used in your project. Versions are mutually incompatible, so a project built with node 18 cannot be analysed using node 20, for example. Allowed versions are `["18", "20", "22"]`. Defaults to "20".
+This is the branch that the checks are being run against - the workflow checks out the latest commit of this branch and creates an SBOM for it. Pass it in like so:
+
+```
+    with:
+      BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+```
 
 ## Outputs
 

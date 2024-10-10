@@ -2,10 +2,6 @@ name: 'SBOM Generation and Security Scanning'
 
 on:
   workflow_call:
-    inputs:
-        BRANCH_NAME:
-            required: true
-            type: string
 
 jobs:
   sbom_scan:
@@ -14,7 +10,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.BRANCH_NAME }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       # Ensure required directories and files exist

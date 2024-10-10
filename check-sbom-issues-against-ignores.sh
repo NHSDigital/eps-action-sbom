@@ -17,6 +17,15 @@ else
   IGNORED_ISSUES=()
 fi
 
+# Report the list of ignored issues
+echo "***************************"
+echo "Ignoring the following issues:"
+echo " "
+for IGNORED in "${IGNORED_ISSUES[@]}"; do
+  echo "    $IGNORED"
+done
+echo "***************************"
+
 # Read scan results and check for critical vulnerabilities
 CRITICAL_FOUND=false
 

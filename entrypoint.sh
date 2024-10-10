@@ -12,6 +12,7 @@ if [ -n "${ASDF_DIR}" ]; then
     cp -r /root/.asdf/* "${ASDF_DIR}"/
 fi
 asdf reshim
+asdf install
 
 # Build the project. Assumes that we have makefile commands in line with 
 # https://nhsd-confluence.digital.nhs.uk/display/APIMC/Git+repository+checklist

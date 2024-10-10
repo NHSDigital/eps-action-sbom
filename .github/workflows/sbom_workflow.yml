@@ -30,6 +30,17 @@ jobs:
           mkdir -p /home/runner/.gnupg
           touch /home/runner/.npmrc
 
+      # Set up NPM token if provided
+      - name: Set up NPM token
+        run: |
+          echo "Setting up .npmrc with provided GITHUB_TOKEN..."
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> /home/runner/.npmrc
+          echo "@nhsdigital:registry=https://npm.pkg.github.com" >> /home/runner/.npmrc
+          echo "NPM token setup complete."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
       - name: Build and run Dev Container
         uses: devcontainers/ci@v0.3
         with:

@@ -1,13 +1,10 @@
-name: run_sbom_checks
+name: 'SBOM Generation and Security Scanning'
 
 on:
-    workflow_call:
-
-env:
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+  workflow_call:
 
 jobs:
-  sbom_checks:
+  sbom_scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -15,46 +12,14 @@ jobs:
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
-  
-      # using git commit sha for version of action to ensure we have stable version
-      - name: Install asdf
-        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+
+      - name: Build and run Dev Container
+        uses: devcontainers/ci@v0.3
         with:
-          asdf_branch: v0.14.1
+          runCmd:  |
+            # Download the SBOM scan script
+            curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/run-sbom-scan.sh -o run-sbom-scan.sh
+            chmod +x ./run-sbom-scan.sh
 
-      - name: Cache asdf
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
-        with:
-          asdf_branch: v0.14.1
-        env:
-          PYTHON_CONFIGURE_OPTS: --enable-shared
-
-      - name: Setting up .npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
-          echo "@nhsdigital:registry=https://npm.pkg.github.com" >> ~/.npmrc
-
-      - name: make install
-        run: |
-          make install
-
-      - name: Generate and check SBOMs
-        uses: NHSDigital/eps-action-sbom@aea-0000-move-to-syft
-
-      - name: Upload SBOMs
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
-        with:
-          name: SBOMS
-          path: '**/*sbom*.json'
+            # Execute the script
+            ./run-sbom-scan.sh

@@ -38,8 +38,7 @@ jobs:
             curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/run-sbom-scan.sh -o run-sbom-scan.sh
             chmod +x ./run-sbom-scan.sh
 
-                # Execute the script
-                ./run-sbom-scan.sh
+            # Execute the script
+            ./run-sbom-scan.sh
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            WORKING_DIRECTORY: ${{ inputs.working_directory }}

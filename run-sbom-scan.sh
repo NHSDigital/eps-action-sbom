@@ -22,13 +22,13 @@ fi
 make install
 
 # Install Syft
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b $HOME/bin
 
 # Install Grype
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b $HOME/bin
 
 # Ensure syft and grype are in PATH
-export PATH="/usr/local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
 
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then

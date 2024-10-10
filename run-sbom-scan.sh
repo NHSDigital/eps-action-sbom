@@ -33,14 +33,14 @@ export PATH="$HOME/bin:$PATH"
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then
   echo "Generating SBOM for NPM packages..."
-  syft dir:./ --catalogers npm-package-cataloger -o syft-json -o sbom-node.json
+  syft -o syft-json --select-catalogers "npm" dir:./ > sbom-npm.json
   echo "Done"
 fi
 
 # Generate SBOMs for Python packages
 if [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
   echo "Generating SBOM for Python packages..."
-  syft dir:./ --catalogers python-package-cataloger -o syft-json -o sbom-python.json
+  syft -o syft-json --select-catalogers "python" dir:./ > sbom-python.json
   echo "Done"
 fi
 
@@ -57,5 +57,26 @@ done
 curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
 chmod +x ./check-sbom-issues-against-ignores.sh
 
-# Run the check script
-./check-sbom-issues-against-ignores.sh ./ignored_security_issues.json
+# Allow script to continue even if errors occur
+set +e
+error_occurred=false
+
+# Compare analysis results with ignored issues
+for analysis in ./sbom*-analysis.json; do
+    if [ -s "$analysis" ]; then
+        echo "$analysis exists and has data. Comparing to ignored issues..."
+        if ! ./check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"; then
+            echo "Error: check-sbom-issues-against-ignores.sh failed for $analysis"
+            error_occurred=true
+        else
+            echo "Done"
+        fi
+    fi
+done
+
+# Exit with an error if any errors occurred
+if [ "$error_occurred" = true ]; then
+    exit 1
+else
+    echo "All checks completed successfully."
+fi

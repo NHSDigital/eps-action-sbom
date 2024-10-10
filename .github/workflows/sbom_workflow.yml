@@ -56,3 +56,10 @@ jobs:
             ./run-sbom-scan.sh
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            
+      # Upload SBOM JSON artifacts
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-files
+          path: '**/*sbom-*.json'

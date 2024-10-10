@@ -6,11 +6,6 @@ on:
         BRANCH_NAME:
             required: true
             type: string
-        working_directory:
-            description: 'The working directory inside the devcontainer'
-            type: string
-            required: false
-            default: '/workspaces'
 
 jobs:
   sbom_scan:

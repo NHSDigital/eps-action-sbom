@@ -1,6 +1,6 @@
 # EPS SBOM scanning action
 
-This workflow generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found. 
+This workflow generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found. Reports are uploaded as artifacts.
 
 Under the hood, it uses `syft`. The repository's devcontainer is built, the project is installed, and `syft` then scans the whole container to produce a series of SBOM. These are then scanned with `grype`.
 

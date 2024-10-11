@@ -1,0 +1,14 @@
+name: 'Run SBOM scripts'
+description: "Scan the current container for an SBOM, and check it for security issues."
+runs:
+  using: "composite"
+  steps:
+    - name: Run SBOM scan
+      run: run-sbom-scan.sh
+      shell: bash
+
+    - name: Upload SBOM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: sbom-files
+        path: '**/*sbom-*.json'

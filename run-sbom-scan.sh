@@ -60,9 +60,11 @@ for sbom in ./sbom*.json; do
   fi
 done
 
-# Download the check script
-curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/v2/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
-chmod +x ./check-sbom-issues-against-ignores.sh
+# Download the check script if it does not already exist
+if [ ! -f ./check-sbom-issues-against-ignores.sh ]; then
+  curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/main/check-sbom-issues-against-ignores.sh -o /check-sbom-issues-against-ignores.sh
+  chmod +x /check-sbom-issues-against-ignores.sh
+fi
 
 # Allow script to continue even if errors occur
 set +e
@@ -72,7 +74,7 @@ error_occurred=false
 for analysis in ./sbom*-analysis.json; do
     if [ -s "$analysis" ]; then
         echo "$analysis exists and has data. Comparing to ignored issues..."
-        if ! ./check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"; then
+        if ! /check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"; then
             echo "Error: check-sbom-issues-against-ignores.sh failed for $analysis"
             error_occurred=true
         else

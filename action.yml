@@ -3,6 +3,12 @@ description: "Scan the current container for an SBOM, and check it for security 
 runs:
   using: "composite"
   steps:
+    - name: Set GitHub Path
+      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+      shell: bash
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+
     - name: Run SBOM scan
       run: run-sbom-scan.sh
       shell: bash

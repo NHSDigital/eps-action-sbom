@@ -22,10 +22,10 @@ fi
 make install
 
 # Install Syft
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b $HOME/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa1a2369912d76304a79/install.sh | sh -s -- -b $HOME/bin
 
 # Install Grype
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b $HOME/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b $HOME/bin
 
 # Ensure syft and grype are in PATH
 export PATH="$HOME/bin:$PATH"
@@ -44,6 +44,13 @@ if [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
   echo "Done"
 fi
 
+# Generate SBOMs for Go packages
+if [ -f "go.mod" ] || [ -f "go.sum" ]; then
+  echo "Generating SBOM for Go packages..."
+  syft -o syft-json --select-catalogers "go" dir:./ > sbom-go.json
+  echo "Done"
+fi
+
 # Scan each SBOM with Grype
 for sbom in ./sbom*.json; do
   if [ -s "$sbom" ]; then
@@ -54,7 +61,7 @@ for sbom in ./sbom*.json; do
 done
 
 # Download the check script
-curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/aea-0000-move-to-syft/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
+curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/v2/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
 chmod +x ./check-sbom-issues-against-ignores.sh
 
 # Allow script to continue even if errors occur

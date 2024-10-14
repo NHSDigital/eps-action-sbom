@@ -3,19 +3,19 @@ setup() {
     load '/usr/lib/bats/bats-assert/load'
     load '/usr/lib/bats/bats-file/load'
 
-    find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
-    find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
-    find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
-    find test/*issues -type f -name 'Makefile' -exec rm -f {} \;
+    find test/*issues -type d -name 'node_modules' -exec rm -rf {} \; 2>/dev/null
+    find test/*issues -type f -name '*sbom*' -exec rm -f {} \; 2>/dev/null
+    find test/*issues -type f -name '.tool-versions' -exec rm -f {} \; 2>/dev/null
+    find test/*issues -type f -name 'Makefile' -exec rm -f {} \; 2>/dev/null
 
-    docker build -t eps-sbom-bats -f test/Dockerfile .
+    docker build -t eps-sbom-bats -f test/Dockerfile ${LOCAL_WORKSPACE_FOLDER}
 }
 
 teardown() {
-	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
-	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
-	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
-	find test/*issues -type f -name 'Makefile' -exec rm -f {} \;
+	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \; 2>/dev/null
+	find test/*issues -type f -name '*sbom*' -exec rm -f {} \; 2>/dev/null
+	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \; 2>/dev/null
+	find test/*issues -type f -name 'Makefile' -exec rm -f {} \; 2>/dev/null
 }
 
 

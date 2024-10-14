@@ -44,15 +44,13 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 
-# Create a directory for the working files
-WORKDIR /tmp
-
 # Copy the run-sbom-scan.sh script to the container
 COPY test/.tool-versions /tmp/
-COPY test/Makefile /tmp/
 
+WORKDIR /tmp
 RUN asdf install
 
+COPY test/Makefile /tmp/
 COPY run-sbom-scan.sh /tmp/
 COPY check-sbom-issues-against-ignores.sh /tmp/
 # Ensure the SBOM script is executable

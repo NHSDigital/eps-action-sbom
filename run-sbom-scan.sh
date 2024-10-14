@@ -6,6 +6,7 @@ set -e
 rm -f ./sbom*.json
 
 asdf install
+asdf reshim
 
 # Set up NPM token if provided
 if [ -n "$GITHUB_TOKEN" ]; then

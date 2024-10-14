@@ -45,20 +45,20 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 
 # Create a directory for the working files
-WORKDIR /boilerplate
+WORKDIR /tmp
 
 # Copy the run-sbom-scan.sh script to the container
-COPY test/.tool-versions /boilerplate/
-COPY test/Makefile /boilerplate/
+COPY test/.tool-versions /tmp/
+COPY test/Makefile /tmp/
 
 RUN asdf install
 
-COPY run-sbom-scan.sh /
-COPY /check-sbom-issues-against-ignores.sh /
+COPY run-sbom-scan.sh /tmp/
+COPY check-sbom-issues-against-ignores.sh /tmp/
 # Ensure the SBOM script is executable
-RUN chmod +x /run-sbom-scan.sh
-RUN chmod +x /check-sbom-issues-against-ignores.sh
+RUN chmod +x /tmp/run-sbom-scan.sh
+RUN chmod +x /tmp/check-sbom-issues-against-ignores.sh
 
 WORKDIR /working
 
-ENTRYPOINT ["/bin/sh", "-c", "cp /boilerplate/* . && /run-sbom-scan.sh"]
+ENTRYPOINT [ "/tmp/run-sbom-scan.sh"]

@@ -7,7 +7,6 @@ lint:
 	shellcheck *.sh
 
 clean:
-	find test/*issues/ -type d -name 'node_modules' -exec rm -rf {} \; 2>/dev/null
-	find test/*issues/ -type f -name '*sbom*' -exec rm -f {} \; 2>/dev/null
-	find test/*issues/ -type f -name '.tool-versions' -exec rm -f {} \; 2>/dev/null
-	find test/*issues/ -type f -name 'Makefile' -exec rm -f {} \; 2>/dev/null
+	find test -type d -name 'node_modules' -exec rm -rf {} \;
+	find test -type f -name 'sbom*' -exec rm -f {} \;
+	find test -type f -name '.tool-versions' -exec rm -f {} \;

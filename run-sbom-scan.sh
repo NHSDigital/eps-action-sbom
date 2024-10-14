@@ -6,14 +6,13 @@ set -e
 rm -f ./sbom*.json
 
 asdf install
-asdf reshim
 
 # Set up NPM token if provided
 if [ -n "$GITHUB_TOKEN" ]; then
   echo "Setting up .npmrc with provided GITHUB_TOKEN..."
-  mkdir -p "$HOME"/.npm
-  echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> "$HOME"/.npmrc
-  echo "@nhsdigital:registry=https://npm.pkg.github.com" >> "$HOME"/.npmrc
+  mkdir -p $HOME/.npm
+  echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> $HOME/.npmrc
+  echo "@nhsdigital:registry=https://npm.pkg.github.com" >> $HOME/.npmrc
   echo "NPM token setup complete."
 else
   echo "No GITHUB_TOKEN provided; skipping NPM authentication setup."
@@ -23,10 +22,10 @@ fi
 make install
 
 # Install Syft
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa1a2369912d76304a79/install.sh | sh -s -- -b "$HOME"/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa1a2369912d76304a79/install.sh | sh -s -- -b $HOME/bin
 
 # Install Grype
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b "$HOME"/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b $HOME/bin
 
 # Ensure syft and grype are in PATH
 export PATH="$HOME/bin:$PATH"
@@ -61,12 +60,8 @@ for sbom in ./sbom*.json; do
   fi
 done
 
-# Download the check script if it does not already exist
-if [ -f /tmp/check-sbom-issues-against-ignores.sh ]; then
-  cp /tmp/check-sbom-issues-against-ignores.sh .
-else
-  curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/main/check-sbom-issues-against-ignores.sh -o ./check-sbom-issues-against-ignores.sh
-fi
+# Download the check script
+curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/v2/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
 chmod +x ./check-sbom-issues-against-ignores.sh
 
 # Allow script to continue even if errors occur

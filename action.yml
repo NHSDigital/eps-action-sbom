@@ -10,7 +10,7 @@ runs:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
 
     - name: Run SBOM scan
-      run: run-sbom-scan.sh
+      run: entrypoint.sh
       shell: bash
 
     - name: Upload SBOM artifacts

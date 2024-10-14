@@ -5,6 +5,16 @@ set -e
 # Remove any existing SBOMs
 rm -f ./sbom*.json
 
+# If the current github workflow has installed asdf, it will pass the ASDF_DIR and ASDF_DATA_DIR
+# environment variables in to the action, overriding this docker container's installation and leaving it
+# unable to find the scripts.
+# Here, we check if these variables are set, and if necessary we copy in our local installation of asdf.
+if [ -n "${ASDF_DIR}" ]; then
+    echo "ASDF_DIR not set. Copying in local installation of asdf..."
+    mkdir -p "${ASDF_DIR}"
+    cp -r /root/.asdf/* "${ASDF_DIR}"/
+fi
+asdf reshim
 asdf install
 
 # Set up NPM token if provided

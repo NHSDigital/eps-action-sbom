@@ -101,6 +101,17 @@ teardown() {
     assert_not_exists test/no-issues/golang/sbom-npm.json
 }
 
+@test "Fails when a known golang threat is encountered" {
+    cp test/.tool-versions test/issues/golang/.tool-versions
+    cp test/Makefile test/issues/golang/Makefile
+
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/golang:/working eps-sbom
+    assert_failure
+    assert_output --partial "GHSA-p744-4q6p-hvc2"
+    assert_output --partial "GHSA-66p8-j459-rq63"
+    assert_output --partial "GHSA-494h-9924-xww9"
+}
+
 @test "Fails when a known NPM threat is encountered" {
     cp test/.tool-versions test/issues/npm-only/.tool-versions
     cp test/Makefile test/issues/npm-only/Makefile

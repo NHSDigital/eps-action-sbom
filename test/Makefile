@@ -14,4 +14,14 @@ install:
 		npm install; \
 	fi
 
+	@if [ -f go.mod ]; then \
+		echo "Installing Go dependencies from go.mod..."; \
+		go mod download; \
+	elif [ -d vendor ]; then \
+		echo "Go dependencies are vendored, no installation needed."; \
+	elif ls *.go 1> /dev/null 2>&1; then \
+		echo "Installing Go dependencies for non-module project..."; \
+		go get ./...; \
+	fi
+
 .PHONY: install

@@ -13,6 +13,10 @@ Specific vulnerabilities can be ignored for a repository by adding the issue ID 
 
 This must be in the root of the project.
 
+## Requirements
+
+When used as part of a Github workflow, this action assumes that the workflow has already installed the target project, for example having run a `make install` command. The docker container that the action is being run inside of will be scanned to produce the SBOM.
+
 ## Secrets
 
 ### `GITHUB_TOKEN`
@@ -25,7 +29,7 @@ None
 
 ## Example usage
 
-Simply call the job in a workflow file. For example,
+Simply call the job in a workflow file, after the project is built. For example,
 
 ```
 name: SBOM scan PR
@@ -35,6 +39,13 @@ on:
     branches: [main]
 
 jobs:
-  sbom_scans:
-    uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@v2.0.0
+  create_sbom:
+    runs-on: ubuntu-latest
+    steps:
+      build_project:
+        run: |
+          make install 
+
+      sbom_scans:
+        uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@v2.0.0
 ```

@@ -1,7 +1,7 @@
 install:
 	@if [ -f requirements.txt ]; then \
 		echo "Installing Python dependencies from requirements.txt..."; \
-		pip install -r requirements.txt; \
+		pip install -r requirements.txt --break-system-packages; \
 	fi
 
 	@if [ -f poetry.lock ] || [ -f pyproject.toml ]; then \

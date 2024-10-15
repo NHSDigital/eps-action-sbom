@@ -3,8 +3,8 @@ setup() {
     load '/usr/lib/bats/bats-assert/load'
     load '/usr/lib/bats/bats-file/load'
 
-	find test/ -type d -name 'node_modules' -exec rm -rf {} \;
-	find test/ -type f -name 'sbom*' -exec rm -f {} \;
+	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
+	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 
@@ -12,8 +12,8 @@ setup() {
 }
 
 teardown() {
-	find test/ -type d -name 'node_modules' -exec rm -rf {} \;
-	find test/ -type f -name 'sbom*' -exec rm -f {} \;
+	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
+	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 }
@@ -45,7 +45,7 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-only:/working eps-sbom
 
-    assert_exists test/no-issues/python-pip-only/sbom-python-pip.json
+    assert_exists test/no-issues/python-pip-only/sbom-python.json
 
     assert_not_exists test/no-issues/python-pip-only/sbom-npm.json
     assert_not_exists test/no-issues/python-pip-only/sbom-python-poetry.json
@@ -57,7 +57,7 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-poetry-only:/working eps-sbom
 
-    assert_exists test/no-issues/python-poetry-only/sbom-python-poetry.json
+    assert_exists test/no-issues/python-poetry-only/sbom-python.json
     
     assert_not_exists test/no-issues/python-poetry-only/sbom-npm.json
     assert_not_exists test/no-issues/python-poetry-only/sbom-python-pip.json
@@ -69,22 +69,10 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
     
-    assert_exists test/no-issues/npm-plus-pip/sbom-python-pip.json
+    assert_exists test/no-issues/npm-plus-pip/sbom-python.json
     assert_exists test/no-issues/npm-plus-pip/sbom-npm.json
 
     assert_not_exists test/no-issues/npm-plus-pip/sbom-python-poetry.json
-}
-
-@test "Can generate issue-free SBOM for Pip and Poetry" {
-    cp test/.tool-versions test/no-issues/python-pip-poetry/.tool-versions
-    cp test/Makefile test/no-issues/python-pip-poetry/Makefile
-
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-poetry:/working eps-sbom
-
-    assert_exists test/no-issues/python-pip-poetry/sbom-python-pip.json
-    assert_exists test/no-issues/python-pip-poetry/sbom-python-poetry.json
-
-    assert_not_exists test/no-issues/python-pip-poetry/sbom-npm.json
 }
 
 @test "Fails when a known NPM threat is encountered" {

@@ -1,4 +1,4 @@
-.PHONY: install build test publish release submodule_update check-licenses
+.PHONY: install build test publish release submodule_update check-licenses clean
 
 test:
 	bats test/test.bats
@@ -11,12 +11,10 @@ clean:
 	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
-
-    # Rename the files to prevent scanning when tests are not running
-    find test/issues/* -type f \( \
-        -name 'package.json' \
-        -o -name 'package-lock.json' \
-        -o -name 'requirements*.txt' \
-        -o -name 'pyproject.toml' \
-        -o -name 'poetry.lock' \
-    \) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;
+	find test/issues/* -type f \( \
+		-name 'package.json' \
+		-o -name 'package-lock.json' \
+		-o -name 'requirements*.txt' \
+		-o -name 'pyproject.toml' \
+		-o -name 'poetry.lock' \
+	\) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;

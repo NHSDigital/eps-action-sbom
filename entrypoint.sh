@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh -l
 
 set -e
 
@@ -10,10 +10,11 @@ rm -f ./sbom*.json
 # unable to find the scripts.
 # Here, we check if these variables are set, and if necessary we copy in our local installation of asdf.
 if [ -n "${ASDF_DIR}" ]; then
-    echo "ASDF_DIR not set. Copying in local installation of asdf..."
-    mkdir -p "${ASDF_DIR}"
-    cp -r /root/.asdf/* "${ASDF_DIR}"/
+    echo "ASDF_DIR has been provided: ${ASDF_DIR}"
+else
+  export ASDF_DIR="/root/.asdf/"
 fi
+export PATH="$PATH:$ASDF_DIR/bin:$ASDF_DIR/shims"
 asdf reshim
 asdf install
 
@@ -71,7 +72,7 @@ for sbom in ./sbom*.json; do
 done
 
 # Download the check script
-curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/v2/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
+curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/main/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
 chmod +x ./check-sbom-issues-against-ignores.sh
 
 # Allow script to continue even if errors occur

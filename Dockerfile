@@ -27,6 +27,11 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 
+# Pre-build the tool versions we'll use, so we don't have to download it every time.
+WORKDIR /build
+ADD test/.tool-versions .
+RUN asdf install
+
 # Set the workdir to what we'll actually use
 WORKDIR /working
 

@@ -33,7 +33,7 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-only:/working eps-sbom
 
-    assert_exists test/no-issues/npm-only/sbom-node.json
+    assert_exists test/no-issues/npm-only/sbom-npm.json
 
     # No python files should be made
     assert_not_exists test/no-issues/npm-only/sbom-python*.json
@@ -47,7 +47,7 @@ teardown() {
 
     assert_exists test/no-issues/python-pip-only/sbom-python-pip.json
 
-    assert_not_exists test/no-issues/python-pip-only/sbom-node.json
+    assert_not_exists test/no-issues/python-pip-only/sbom-npm.json
     assert_not_exists test/no-issues/python-pip-only/sbom-python-poetry.json
 }
 
@@ -59,7 +59,7 @@ teardown() {
 
     assert_exists test/no-issues/python-poetry-only/sbom-python-poetry.json
     
-    assert_not_exists test/no-issues/python-poetry-only/sbom-node.json
+    assert_not_exists test/no-issues/python-poetry-only/sbom-npm.json
     assert_not_exists test/no-issues/python-poetry-only/sbom-python-pip.json
 }
 
@@ -70,7 +70,7 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
     
     assert_exists test/no-issues/npm-plus-pip/sbom-python-pip.json
-    assert_exists test/no-issues/npm-plus-pip/sbom-node.json
+    assert_exists test/no-issues/npm-plus-pip/sbom-npm.json
 
     assert_not_exists test/no-issues/npm-plus-pip/sbom-python-poetry.json
 }
@@ -84,7 +84,7 @@ teardown() {
     assert_exists test/no-issues/python-pip-poetry/sbom-python-pip.json
     assert_exists test/no-issues/python-pip-poetry/sbom-python-poetry.json
 
-    assert_not_exists test/no-issues/python-pip-poetry/sbom-node.json
+    assert_not_exists test/no-issues/python-pip-poetry/sbom-npm.json
 }
 
 @test "Fails when a known NPM threat is encountered" {

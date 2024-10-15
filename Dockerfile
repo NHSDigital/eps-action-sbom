@@ -24,6 +24,7 @@ ENV PATH="$PATH:/root/.asdf/bin/"
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add actionlint; \
     asdf plugin add python; \
+    asdf plugin add golang; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 

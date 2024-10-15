@@ -54,7 +54,7 @@ teardown() {
     assert_exists test/no-issues/npm-only/sbom-npm.json
 
     # No python files should be made
-    assert_not_exists test/no-issues/npm-only/sbom-python*.json
+    assert_not_exists test/no-issues/npm-only/sbom-python.json
 }
 
 @test "Can generate an issue-free SBOM for Pip" {    
@@ -66,7 +66,6 @@ teardown() {
     assert_exists test/no-issues/python-pip-only/sbom-python.json
 
     assert_not_exists test/no-issues/python-pip-only/sbom-npm.json
-    assert_not_exists test/no-issues/python-pip-only/sbom-python-poetry.json
 }
 
 @test "Can generate an issue-free SBOM for Poetry" {
@@ -78,7 +77,6 @@ teardown() {
     assert_exists test/no-issues/python-poetry-only/sbom-python.json
     
     assert_not_exists test/no-issues/python-poetry-only/sbom-npm.json
-    assert_not_exists test/no-issues/python-poetry-only/sbom-python-pip.json
 }
 
 @test "Can generate issue-free SBOM for NPM and Pip" {
@@ -89,8 +87,18 @@ teardown() {
     
     assert_exists test/no-issues/npm-plus-pip/sbom-python.json
     assert_exists test/no-issues/npm-plus-pip/sbom-npm.json
+}
 
-    assert_not_exists test/no-issues/npm-plus-pip/sbom-python-poetry.json
+@test "Can generate issue-free SBOM for golang" {
+    cp test/.tool-versions test/no-issues/golang/.tool-versions
+    cp test/Makefile test/no-issues/golang/Makefile
+
+    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/golang:/working eps-sbom
+    
+    assert_exists test/no-issues/golang/sbom-golang.json
+
+    assert_not_exists test/no-issues/golang/sbom-python.json
+    assert_not_exists test/no-issues/golang/sbom-npm.json
 }
 
 @test "Fails when a known NPM threat is encountered" {
@@ -150,3 +158,4 @@ teardown() {
     assert_output --partial "GHSA-4jcv-vp96-94xr"
     assert_output --partial "GHSA-5wvp-7f3h-6wmm"
 }
+

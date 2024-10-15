@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/bash -l
 
 set -e
 
@@ -38,8 +38,19 @@ curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa
 # Install Grype
 curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b "$HOME"/bin
 
-# Ensure syft and grype are in PATH
+# Ensure syft, grype, and jq are in PATH
 export PATH="$HOME/bin:$PATH"
+
+# Install jq if not already installed
+if ! command -v jq > /dev/null; then
+  echo "Installing jq..."
+  JQ_URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
+  curl -L -o "$HOME/bin/jq" "$JQ_URL"
+  chmod +x "$HOME/bin/jq"
+  echo "jq installed."
+else
+  echo "jq is already installed."
+fi
 
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then
@@ -56,9 +67,9 @@ if [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
 fi
 
 # Generate SBOMs for Go packages
-if [ -f "go.mod" ] || [ -f "go.sum" ]; then
+if [ -f "go.mod" ] || [ -f "go.sum" ] || [ -d "vendor" ] || ls ./*.go 1> /dev/null 2>&1; then
   echo "Generating SBOM for Go packages..."
-  syft -o syft-json --select-catalogers "go" dir:./ > sbom-go.json
+  syft -o syft-json --select-catalogers "go" dir:. > "sbom-golang.json"
   echo "Done"
 fi
 
@@ -71,25 +82,89 @@ for sbom in ./sbom*.json; do
   fi
 done
 
-# Download the check script
-curl -sSfL https://raw.githubusercontent.com/NHSDigital/eps-action-sbom/refs/heads/main/check-sbom-issues-against-ignores.sh -o check-sbom-issues-against-ignores.sh
-chmod +x ./check-sbom-issues-against-ignores.sh
-
 # Allow script to continue even if errors occur
 set +e
 error_occurred=false
 
 # Compare analysis results with ignored issues
 for analysis in ./sbom*-analysis.json; do
-    if [ -s "$analysis" ]; then
-        echo "$analysis exists and has data. Comparing to ignored issues..."
-        if ! ./check-sbom-issues-against-ignores.sh ./ignored_security_issues.json "$analysis"; then
-            echo "Error: check-sbom-issues-against-ignores.sh failed for $analysis"
-            error_occurred=true
-        else
-            echo "Done"
-        fi
+  if [ -s "$analysis" ]; then
+    echo "$analysis exists and has data. Comparing to ignored issues..."
+
+    # Begin integrated code from check-sbom-issues-against-ignores.sh
+    IGNORED_ISSUES_FILE="./ignored_security_issues.json"
+    SCAN_RESULTS_FILE="$analysis"
+
+    # Check if the scan results file exists
+    if [ ! -f "$SCAN_RESULTS_FILE" ]; then
+      echo "Skipping scanning SBOM issues: missing the scan results file"
+      continue
     fi
+
+    # Read ignored issues into an array. Default to ignoring no issues.
+    if [ -f "$IGNORED_ISSUES_FILE" ]; then
+      mapfile -t IGNORED_ISSUES < <(jq -r '.[]' "$IGNORED_ISSUES_FILE")
+    else
+      IGNORED_ISSUES=()
+    fi
+
+    # Report the list of ignored issues
+    echo "***************************"
+    echo "Ignoring the following issues:"
+    echo " "
+    for IGNORED in "${IGNORED_ISSUES[@]}"; do
+      echo "    $IGNORED"
+    done
+    echo "***************************"
+
+    # Read scan results and check for critical vulnerabilities
+    CRITICAL_FOUND=false
+
+    # Loop through vulnerabilities in the scan results
+    while IFS= read -r MATCH; do
+      VULN_ID=$(echo "$MATCH" | jq -r '.vulnerability.id')
+      DESCRIPTION=$(echo "$MATCH" | jq -r '.vulnerability.description')
+      DATASOURCE=$(echo "$MATCH" | jq -r '.vulnerability.dataSource')
+
+      # Check if the vulnerability ID is in the ignored list
+      FOUND=false
+      for IGNORED in "${IGNORED_ISSUES[@]}"; do
+        if [ "$IGNORED" = "$VULN_ID" ]; then
+          FOUND=true
+          echo
+          echo "***************************"
+          echo "Warning: Ignored vulnerability found: $VULN_ID"
+          echo "Warning: Description: $DESCRIPTION"
+          echo "Warning: dataSource: $DATASOURCE"
+          echo "***************************"
+          break
+        fi
+      done
+
+      # If the vulnerability is not found in the ignored list, mark critical as found
+      if [ "$FOUND" = false ]; then
+        echo
+        echo "***************************"
+        echo "Error: Critical vulnerability found that is not in the ignore list: $VULN_ID"
+        echo "Error: Description: $DESCRIPTION"
+        echo "Error: dataSource: $DATASOURCE"
+        echo "***************************"
+        CRITICAL_FOUND=true
+      fi
+    done < <(jq -c '.matches[] | select(.vulnerability.severity == "Critical")' "$SCAN_RESULTS_FILE")
+
+    # If critical vulnerabilities found, set error_occurred to true
+    if [[ "$CRITICAL_FOUND" == true ]]; then
+      echo "ERROR: Address the critical vulnerabilities before proceeding."
+      echo "To add this to an ignore list, add the vulnerability to ignored_security_issues.json"
+      echo "See https://github.com/NHSDigital/eps-action-sbom for more details"
+      error_occurred=true
+    else
+      echo "No unignored critical vulnerabilities found."
+    fi
+
+    echo "Done"
+  fi
 done
 
 # Exit with an error if any errors occurred

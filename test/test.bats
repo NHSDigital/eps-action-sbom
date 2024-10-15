@@ -100,7 +100,7 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/working eps-sbom
     assert_failure
 
-    assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "GHSA-5p8v-58qm-c7fp"
 }
 
 @test "Passes when an ignored issue is encountered - python pip" {
@@ -109,7 +109,7 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/working eps-sbom
     assert_success
-    assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "GHSA-5p8v-58qm-c7fp"
 }
 
 @test "Fails when a known python poetry threat is encountered" {

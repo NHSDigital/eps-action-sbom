@@ -3,6 +3,15 @@ setup() {
     load '/usr/lib/bats/bats-assert/load'
     load '/usr/lib/bats/bats-file/load'
 
+    # Rename the files back to their original names for testing
+    find test/issues/* -type f \( \
+        -name 'package.json_no-check' \
+        -o -name 'package-lock.json_no-check' \
+        -o -name 'requirements*.txt_no-check' \
+        -o -name 'pyproject.toml_no-check' \
+        -o -name 'poetry.lock_no-check' \
+    \) -exec sh -c 'mv "$1" "${1%_no-check}"' _ {} \;
+
 	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
 	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
@@ -16,6 +25,15 @@ teardown() {
 	find test/*issues -type f -name '*sbom*' -exec rm -f {} \;
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
+
+    # Rename the files to prevent scanning when tests are not running
+    find test/issues/* -type f \( \
+        -name 'package.json' \
+        -o -name 'package-lock.json' \
+        -o -name 'requirements*.txt' \
+        -o -name 'pyproject.toml' \
+        -o -name 'poetry.lock' \
+    \) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;
 }
 
 

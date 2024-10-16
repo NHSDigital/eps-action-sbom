@@ -1,4 +1,4 @@
-#!/bin/bash -l
+#!/bin/env bash
 
 set -e
 
@@ -15,8 +15,8 @@ else
   export ASDF_DIR="/root/.asdf/"
 fi
 export PATH="$PATH:$ASDF_DIR/bin:$ASDF_DIR/shims"
-asdf reshim
 asdf install
+asdf reshim
 
 # Set up NPM token if provided
 if [ -n "$GITHUB_TOKEN" ]; then
@@ -101,19 +101,32 @@ for analysis in ./sbom*-analysis.json; do
       continue
     fi
 
-    # Read ignored issues into an array. Default to ignoring no issues.
+    # Declare an associative array to hold ignored issues and their reasons
+    declare -A IGNORED_ISSUES
+
+    # Read ignored issues into the associative array. Enforce that both 'vulnerability_id' and 'reason' are populated.
     if [ -f "$IGNORED_ISSUES_FILE" ]; then
-      mapfile -t IGNORED_ISSUES < <(jq -r '.[]' "$IGNORED_ISSUES_FILE")
+      while IFS= read -r line; do
+        VULN_ID=$(echo "$line" | jq -r '.vulnerability_id')
+        REASON=$(echo "$line" | jq -r '.reason')
+        # Ensure both fields are populated
+        if [ -z "$VULN_ID" ] || [ -z "$REASON" ] || [ "$VULN_ID" = "null" ] || [ "$REASON" = "null" ]; then
+          echo "Error: 'vulnerability_id' or 'reason' is missing in an ignore entry."
+          exit 1
+        fi
+        IGNORED_ISSUES["$VULN_ID"]="$REASON"
+      done < <(jq -c '.[]' "$IGNORED_ISSUES_FILE")
     else
-      IGNORED_ISSUES=()
+      declare -A IGNORED_ISSUES=()
     fi
 
-    # Report the list of ignored issues
+    # Report the list of ignored issues with reasons
     echo "***************************"
-    echo "Ignoring the following issues:"
+    echo "Ignoring the following issues with reasons:"
     echo " "
-    for IGNORED in "${IGNORED_ISSUES[@]}"; do
-      echo "    $IGNORED"
+    for VULN_ID in "${!IGNORED_ISSUES[@]}"; do
+      REASON="${IGNORED_ISSUES[$VULN_ID]}"
+      echo "    $VULN_ID: $REASON"
     done
     echo "***************************"
 
@@ -127,22 +140,17 @@ for analysis in ./sbom*-analysis.json; do
       DATASOURCE=$(echo "$MATCH" | jq -r '.vulnerability.dataSource')
 
       # Check if the vulnerability ID is in the ignored list
-      FOUND=false
-      for IGNORED in "${IGNORED_ISSUES[@]}"; do
-        if [ "$IGNORED" = "$VULN_ID" ]; then
-          FOUND=true
-          echo
-          echo "***************************"
-          echo "Warning: Ignored vulnerability found: $VULN_ID"
-          echo "Warning: Description: $DESCRIPTION"
-          echo "Warning: dataSource: $DATASOURCE"
-          echo "***************************"
-          break
-        fi
-      done
-
-      # If the vulnerability is not found in the ignored list, mark critical as found
-      if [ "$FOUND" = false ]; then
+      if [ -n "${IGNORED_ISSUES[$VULN_ID]}" ]; then
+        REASON="${IGNORED_ISSUES[$VULN_ID]}"
+        echo
+        echo "***************************"
+        echo "Warning: Ignored vulnerability found: $VULN_ID"
+        echo "Reason: $REASON"
+        echo "Description: $DESCRIPTION"
+        echo "dataSource: $DATASOURCE"
+        echo "***************************"
+      else
+        # If the vulnerability is not found in the ignored list, mark critical as found
         echo
         echo "***************************"
         echo "Error: Critical vulnerability found that is not in the ignore list: $VULN_ID"
@@ -156,7 +164,7 @@ for analysis in ./sbom*-analysis.json; do
     # If critical vulnerabilities found, set error_occurred to true
     if [[ "$CRITICAL_FOUND" == true ]]; then
       echo "ERROR: Address the critical vulnerabilities before proceeding."
-      echo "To add this to an ignore list, add the vulnerability to ignored_security_issues.json"
+      echo "To add this to an ignore list, add the vulnerability to ignored_security_issues.json (with a reason)."
       echo "See https://github.com/NHSDigital/eps-action-sbom for more details"
       error_occurred=true
     else

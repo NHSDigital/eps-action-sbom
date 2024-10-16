@@ -128,6 +128,7 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-npm-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-8rmg-jf7p-4p22"
+    assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
 @test "Fails when a known python pip threat is encountered" {
@@ -147,6 +148,7 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-5p8v-58qm-c7fp"
+    assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
 @test "Fails when a known python poetry threat is encountered" {
@@ -167,6 +169,8 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "This is a test to see if ignoring the issue works"
     assert_output --partial "GHSA-5wvp-7f3h-6wmm"
+    assert_output --partial "This is a second ignored issue"
 }
 

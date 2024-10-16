@@ -7,7 +7,10 @@ Under the hood, it uses `syft`. The repository's devcontainer is built, the proj
 Specific vulnerabilities can be ignored for a repository by adding the issue ID to an ignore file in the relevant repository: `ignored_security_issues.json`, e.g.
 ```
 [
-	"GHSA-4jcv-vp96-94xr"
+  {
+	  "vulnerability_id": "GHSA-4jcv-vp96-94xr",
+    "reason": "The fix for this vulnerability is planned for the next sprint"
+  }
 ]
 ```
 

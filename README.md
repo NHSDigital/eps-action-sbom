@@ -8,7 +8,7 @@ Specific vulnerabilities can be ignored for a repository by adding the issue ID 
 ```
 [
   {
-	  "vulnerability_id": "GHSA-4jcv-vp96-94xr",
+    "vulnerability_id": "GHSA-4jcv-vp96-94xr",
     "reason": "The fix for this vulnerability is planned for the next sprint"
   }
 ]

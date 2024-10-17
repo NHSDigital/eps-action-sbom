@@ -1,1 +1,6 @@
-["GHSA-4jcv-vp96-94xr"]
+[
+    {
+        "vulnerability_id": "GHSA-5p8v-58qm-c7fp",
+        "reason": "This is a test to see if ignoring the issue works"
+    }
+]

@@ -24,7 +24,7 @@ When used as part of a Github workflow, this action assumes that the workflow ha
 
 ### `GITHUB_TOKEN`
 
-Some `npm` packages require a github token to access a private repository. This token is assumed to be supplied as a secret, keyed as `GITHUB_TOKEN`
+Some `npm` packages require a github token to access a private repository. This token is assumed to be supplied as a secret, keyed as `GITHUB_TOKEN`. Github should add this automatically.
 
 ## Outputs
 

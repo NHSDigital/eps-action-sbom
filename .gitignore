@@ -1,2 +1,5 @@
 node_modules
 *sbom*.json
+test/**/*.sh
+test/**/.tool-versions
+test/**/Makefile

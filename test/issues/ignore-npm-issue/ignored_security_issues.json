@@ -1,1 +1,6 @@
-["GHSA-8rmg-jf7p-4p22"]
+[
+    {
+        "vulnerability_id": "GHSA-8rmg-jf7p-4p22",
+        "reason": "This is a test to see if ignoring the issue works"
+    }
+]

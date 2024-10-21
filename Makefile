@@ -1,5 +1,9 @@
 .PHONY: install build test publish release submodule_update check-licenses clean
 
+install:
+	asdf install
+	apt-get install bats bats-support bats-assert bats-file
+
 test:
 	bats test/test.bats
 

@@ -16,6 +16,18 @@ jobs:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
 
+      - name: install bats and other files
+        run: |
+          sudo apt update
+          sudo apt install bats \
+            bats-assert \
+            bats-support bats-file \
+            liblzma-dev \
+            libyaml-dev \
+            libbz2-dev \
+            libreadline-dev \
+            libsqlite3-dev
+
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
         uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
@@ -38,9 +50,6 @@ jobs:
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared 
     
-      - name: install bats
-        run: sudo apt update; sudo apt install bats bats-assert bats-support bats-file
-
       - name: run lint
         run: make lint
 

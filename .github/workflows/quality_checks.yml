@@ -50,8 +50,6 @@ jobs:
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared 
     
-
-
       - name: run lint
         run: make lint
 

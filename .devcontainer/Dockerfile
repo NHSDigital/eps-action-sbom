@@ -30,7 +30,8 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add actionlint; \
     asdf plugin add python; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
-    asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
+    asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git; \
+    asdf plugin add golang https://github.com/kennyp/asdf-golang.git;
 
 WORKDIR /workspaces/eps-action-sbom
 ADD .tool-versions /workspaces/eps-action-sbom/.tool-versions

@@ -4,7 +4,7 @@ setup() {
     load '/usr/lib/bats/bats-file/load'
 
     # Rename the files back to their original names for testing
-    find test/issues/* -type f \( \
+    find test/*issues/* -type f \( \
         -name 'package.json_no-check' \
         -o -name 'package-lock.json_no-check' \
         -o -name 'requirements*.txt_no-check' \
@@ -27,7 +27,7 @@ teardown() {
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 
     # Rename the files to prevent scanning when tests are not running
-    find test/issues/* -type f \( \
+    find test/*issues/* -type f \( \
         -name 'package.json' \
         -o -name 'package-lock.json' \
         -o -name 'requirements*.txt' \

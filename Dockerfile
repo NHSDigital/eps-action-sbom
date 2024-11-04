@@ -1,5 +1,12 @@
 FROM ubuntu:24.04
 
+# Create a non-root user and group with a specified UID and GID
+# This is so that docker doesn't install any node-modules etc. as root
+# in the mounted volume
+ARG USER_NAME=myuser
+ARG USER_UID=1000
+ARG USER_GID=1000
+
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y dist-upgrade \
@@ -42,5 +49,8 @@ ADD entrypoint.sh /entrypoint.sh
 # Set the umask so that the files created by docker can be universally accessed. 
 # Lets the tests successfully teardown.
 RUN echo "umask 000" >> /etc/profile
+
+# Switch to the non-root user
+USER $USER_NAME
 
 ENTRYPOINT ["/entrypoint.sh"]

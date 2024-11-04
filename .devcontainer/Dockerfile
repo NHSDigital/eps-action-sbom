@@ -15,6 +15,10 @@ RUN apt-get update \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev liblzma-dev libyaml-dev bats git
 
+# Set the umask so that the files created by docker can be universally accessed. 
+# Lets the tests successfully teardown.
+RUN echo "umask 000" >> /etc/profile
+
 USER vscode
 
 # Install ASDF

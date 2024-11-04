@@ -1,7 +1,7 @@
 setup() {
-    load '/usr/lib/bats/bats-support/load'
-    load '/usr/lib/bats/bats-assert/load'
-    load '/usr/lib/bats/bats-file/load'
+    load 'test_helper/bats-support/load'
+    load 'test_helper/bats-assert/load'
+    load 'test_helper/bats-file/load'
 
     # Rename the files back to their original names for testing
     find test/issues/* -type f \( \

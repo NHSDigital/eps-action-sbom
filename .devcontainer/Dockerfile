@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
 
 # Workaround for remoteuser id issue
 # https://github.com/microsoft/vscode-remote-release/issues/10030
@@ -13,7 +13,7 @@ RUN apt-get update \
     jq apt-transport-https ca-certificates gnupg-agent \
     software-properties-common bash-completion python3-pip make libbz2-dev \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev liblzma-dev libyaml-dev bats bats-support bats-assert bats-file
+    xz-utils tk-dev liblzma-dev libyaml-dev bats git
 
 USER vscode
 
@@ -29,6 +29,7 @@ ENV PATH="$PATH:/home/vscode/.asdf/bin/"
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add actionlint; \
     asdf plugin add python; \
+    asdf plugin add golang; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git;
 

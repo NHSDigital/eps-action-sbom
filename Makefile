@@ -2,7 +2,9 @@
 
 install:
 	sudo apt-get update
-	sudo apt-get install -y bats bats-support bats-assert bats-file
+	sudo apt-get install -y bats
+	git submodule init
+	git submodule update
 
 test:
 	bats test/test.bats

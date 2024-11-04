@@ -4,12 +4,14 @@ setup() {
     load 'test_helper/bats-file/load'
 
     # Rename the files back to their original names for testing
-    find test/issues/* -type f \( \
+    find test/*issues/* -type f \( \
         -name 'package.json_no-check' \
         -o -name 'package-lock.json_no-check' \
         -o -name 'requirements*.txt_no-check' \
         -o -name 'pyproject.toml_no-check' \
         -o -name 'poetry.lock_no-check' \
+        -o -name 'go.sum_no-check' \
+        -o -name 'go.mod_no-check' \
     \) -exec sh -c 'mv "$1" "${1%_no-check}"' _ {} \;
 
 	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
@@ -27,12 +29,14 @@ teardown() {
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 
     # Rename the files to prevent scanning when tests are not running
-    find test/issues/* -type f \( \
+    find test/*issues/* -type f \( \
         -name 'package.json' \
         -o -name 'package-lock.json' \
         -o -name 'requirements*.txt' \
         -o -name 'pyproject.toml' \
         -o -name 'poetry.lock' \
+        -o -name 'go.sum' \
+        -o -name 'go.mod' \
     \) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;
 }
 

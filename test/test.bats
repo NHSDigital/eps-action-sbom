@@ -51,10 +51,10 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-only:/working eps-sbom
 
-    assert_exists test/no-issues/npm-only/sbom-npm.json
+    assert_file_exist test/no-issues/npm-only/sbom-npm.json
 
     # No python files should be made
-    assert_not_exists test/no-issues/npm-only/sbom-python.json
+    assert_file_not_exist test/no-issues/npm-only/sbom-python.json
 }
 
 @test "Can generate an issue-free SBOM for Pip" {    
@@ -63,9 +63,9 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-only:/working eps-sbom
 
-    assert_exists test/no-issues/python-pip-only/sbom-python.json
+    assert_file_exist test/no-issues/python-pip-only/sbom-python.json
 
-    assert_not_exists test/no-issues/python-pip-only/sbom-npm.json
+    assert_file_not_exist test/no-issues/python-pip-only/sbom-npm.json
 }
 
 @test "Can generate an issue-free SBOM for Poetry" {
@@ -74,9 +74,9 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-poetry-only:/working eps-sbom
 
-    assert_exists test/no-issues/python-poetry-only/sbom-python.json
+    assert_file_exist test/no-issues/python-poetry-only/sbom-python.json
     
-    assert_not_exists test/no-issues/python-poetry-only/sbom-npm.json
+    assert_file_not_exist test/no-issues/python-poetry-only/sbom-npm.json
 }
 
 @test "Can generate issue-free SBOM for NPM and Pip" {
@@ -85,8 +85,8 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
     
-    assert_exists test/no-issues/npm-plus-pip/sbom-python.json
-    assert_exists test/no-issues/npm-plus-pip/sbom-npm.json
+    assert_file_exist test/no-issues/npm-plus-pip/sbom-python.json
+    assert_file_exist test/no-issues/npm-plus-pip/sbom-npm.json
 }
 
 @test "Can generate issue-free SBOM for golang" {
@@ -95,10 +95,10 @@ teardown() {
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/golang:/working eps-sbom
     
-    assert_exists test/no-issues/golang/sbom-golang.json
+    assert_file_exist test/no-issues/golang/sbom-golang.json
 
-    assert_not_exists test/no-issues/golang/sbom-python.json
-    assert_not_exists test/no-issues/golang/sbom-npm.json
+    assert_file_not_exist test/no-issues/golang/sbom-python.json
+    assert_file_not_exist test/no-issues/golang/sbom-npm.json
 }
 
 @test "Fails when a known golang threat is encountered" {

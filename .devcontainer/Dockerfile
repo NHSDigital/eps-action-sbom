@@ -15,10 +15,6 @@ RUN apt-get update \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev liblzma-dev libyaml-dev bats git
 
-# Set the umask so that the files created by docker can be universally accessed. 
-# Lets the tests successfully teardown.
-RUN echo "umask 000" >> /etc/profile
-
 USER vscode
 
 # Install ASDF
@@ -27,7 +23,6 @@ RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
     echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc; 
 
 ENV PATH="$PATH:/home/vscode/.asdf/bin/"
-
 
 # Install ASDF plugins
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
@@ -39,7 +34,6 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add golang https://github.com/kennyp/asdf-golang.git;
 
 WORKDIR /workspaces/eps-action-sbom
-ADD .tool-versions /workspaces/eps-action-sbom/.tool-versions
 ADD .tool-versions /home/vscode/.tool-versions
 
 RUN asdf install

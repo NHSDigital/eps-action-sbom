@@ -5,6 +5,7 @@ install:
 	sudo apt-get install -y bats
 	git submodule init
 	git submodule update
+	asdf install
 
 test:
 	bats test/test.bats

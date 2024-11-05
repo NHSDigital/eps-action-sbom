@@ -15,6 +15,13 @@ else
   export ASDF_DIR="/root/.asdf/"
 fi
 export PATH="$PATH:$ASDF_DIR/bin:$ASDF_DIR/shims"
+echo "**************"
+echo "**************"
+pwd
+echo "**************"
+ls -lah
+echo "**************"
+echo "**************"
 asdf install
 asdf reshim
 

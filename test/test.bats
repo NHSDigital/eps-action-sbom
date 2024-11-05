@@ -20,6 +20,10 @@ setup() {
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 
     docker build -t eps-sbom .
+
+    if [ -z $LOCAL_WORKSPACE_FOLDER ]; then
+        LOCAL_WORKSPACE_FOLDER=$(pwd)
+    fi
 }
 
 teardown() {

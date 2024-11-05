@@ -3,3 +3,10 @@ node_modules
 test/**/*.sh
 test/**/.tool-versions
 test/**/Makefile
+test/*issues/*/package.json
+test/*issues/*/package-lock.json
+test/*issues/*/requirements.txt
+test/*issues/*/pyproject.toml
+test/*issues/*/poetry.lock
+test/*issues/*/go.sum
+test/*issues/*/go.mod

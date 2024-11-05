@@ -49,16 +49,6 @@ teardown() {
     cp test/.tool-versions test/no-issues/no-content/.tool-versions
     cp test/Makefile test/no-issues/no-content/Makefile
 
-    echo "*****************"
-    echo "*****************"
-    echo "Local WS:"
-    echo $LOCAL_WORKSPACE_FOLDER
-    echo "*****************"
-    ls -alh $LOCAL_WORKSPACE_FOLDER
-    echo "*****************"
-    echo "*****************"
-
-
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/no-content:/working eps-sbom
     assert_success
 }

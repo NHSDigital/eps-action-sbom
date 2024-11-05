@@ -1,5 +1,11 @@
 FROM ubuntu:24.04
 
+# Create a non-root user with sudo privileges
+RUN useradd -ms /bin/bash eps-sbom-user && \
+    usermod -aG sudo eps-sbom-user && \
+    echo 'eps-sbom-user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# Install required packages
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -y dist-upgrade \
@@ -12,13 +18,17 @@ RUN apt-get update \
     xz-utils tk-dev liblzma-dev libyaml-dev bats bats-support bats-assert bats-file \
     python3 python3-pip python3-dev
 
+# Switch to the new user
+USER eps-sbom-user
+WORKDIR /home/eps-sbom-user
+
 # Install ASDF
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
-    echo '. /root/.asdf/asdf.sh' >> ~/.bashrc; \
-    echo '. /root/.asdf/completions/asdf.bash' >> ~/.bashrc; \
-    echo 'PATH="$PATH:/root/.asdf/bin/"' >> ~/.bashrc;
+    echo '. /home/eps-sbom-user/.asdf/asdf.sh' >> ~/.bashrc; \
+    echo '. /home/eps-sbom-user/.asdf/completions/asdf.bash' >> ~/.bashrc; \
+    echo 'PATH="$PATH:/home/eps-sbom-user/.asdf/bin/"' >> ~/.bashrc;
 
-ENV PATH="$PATH:/root/.asdf/bin/"
+ENV PATH="$PATH:/home/eps-sbom-user/.asdf/bin/"
 
 # Install ASDF plugins
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
@@ -37,10 +47,10 @@ RUN asdf install
 WORKDIR /working
 
 # Files to execute when the docker container starts up
-ADD entrypoint.sh /entrypoint.sh
+ADD entrypoint.sh /home/eps-sbom-user/entrypoint.sh
 
 # Set the umask so that the files created by docker can be universally accessed. 
 # Lets the tests successfully teardown.
-RUN echo "umask 000" >> /etc/profile
+RUN echo "umask 000" >> ~/.profile
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/home/eps-sbom-user/entrypoint.sh"]

@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
 
 # Workaround for remoteuser id issue
 # https://github.com/microsoft/vscode-remote-release/issues/10030
-RUN userdel -r ubuntu; usermod -u 1000 vscode; groupmod -g 1000 vscode
+# RUN userdel -r ubuntu; usermod -u 1001 vscode; groupmod -g 1000 vscode
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \

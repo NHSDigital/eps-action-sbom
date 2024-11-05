@@ -50,5 +50,5 @@ jobs:
           make install 
 
       sbom_scans:
-        uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@v2.0.0
+        uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@<VERSION TAG>
 ```

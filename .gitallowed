@@ -3,3 +3,4 @@ hash\s*=\s*"(sha256:[a-f0-9]{64})"
 .*poetry\.lock.*
 .*pyproject\.toml.*
 .*test\/issues\/*\/.*requirements\.txt:1:mindsdb==23.12.4.1$
+.*\.gitallowed.*

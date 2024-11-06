@@ -15,7 +15,7 @@ RUN apt-get update \
     jq apt-transport-https ca-certificates gnupg-agent \
     software-properties-common bash-completion python3-pip make libbz2-dev \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev liblzma-dev libyaml-dev bats bats-support bats-assert bats-file \
+    xz-utils tk-dev liblzma-dev libyaml-dev \
     python3 python3-pip python3-dev
 
 # Switch to the new user

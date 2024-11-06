@@ -40,14 +40,14 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
 
 # Pre-build the tool versions we'll use, so we don't have to download it every time.
 WORKDIR /build
-ADD test/.tool-versions .
+COPY test/.tool-versions .
 RUN asdf install
 
 # Set the workdir to what we'll actually use
 WORKDIR /working
 
 # Files to execute when the docker container starts up
-ADD entrypoint.sh /home/eps-sbom-user/entrypoint.sh
+COPY entrypoint.sh /home/eps-sbom-user/entrypoint.sh
 
 # Set the umask so that the files created by docker can be universally accessed. 
 # Lets the tests successfully teardown.

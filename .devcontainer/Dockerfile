@@ -34,6 +34,6 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add golang https://github.com/kennyp/asdf-golang.git;
 
 WORKDIR /workspaces/eps-action-sbom
-ADD .tool-versions /home/vscode/.tool-versions
+COPY .tool-versions /home/vscode/.tool-versions
 
 RUN asdf install

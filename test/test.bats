@@ -166,7 +166,7 @@ teardown() {
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-poetry-only:/working eps-sbom
     assert_failure
 
-    assert_output --partial "GHSA-4jcv-vp96-94xr"
+    assert_output --partial "GHSA-9298-4cf8-g4wj"
     assert_output --partial "GHSA-5wvp-7f3h-6wmm"
 }
 

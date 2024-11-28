@@ -1,0 +1,5 @@
+hash\s*=\s*"(sha256:[a-f0-9]{64})"
+.*secrets.GITHUB_TOKEN.*
+.*poetry\.lock.*
+.*pyproject\.toml.*
+.*mindsdb==23.12.4.1.*

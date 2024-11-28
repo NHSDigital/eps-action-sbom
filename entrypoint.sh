@@ -12,9 +12,10 @@ rm -f ./sbom*.json
 if [ -n "${ASDF_DIR}" ]; then
     echo "ASDF_DIR has been provided: ${ASDF_DIR}"
 else
-  export ASDF_DIR="/root/.asdf/"
+  export ASDF_DIR="/home/eps-sbom-user/.asdf/"
 fi
 export PATH="$PATH:$ASDF_DIR/bin:$ASDF_DIR/shims"
+
 asdf install
 asdf reshim
 

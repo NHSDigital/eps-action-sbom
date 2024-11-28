@@ -1,5 +1,7 @@
 # EPS SBOM scanning action
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NHSDigital_eps-action-sbom&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=NHSDigital_eps-action-sbom)
+
 This workflow generates a Software Bill Of Materials (SBOM) for Python and NPM in a project. It also scans these for security vulnerabilities, and reports an error if any are found. Reports are uploaded as artifacts.
 
 Under the hood, it uses `syft`. The repository's devcontainer is built, the project is installed, and `syft` then scans the whole container to produce a series of SBOM. These are then scanned with `grype`.
@@ -50,5 +52,5 @@ jobs:
           make install 
 
       sbom_scans:
-        uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@v2.0.0
+        uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@<VERSION TAG>
 ```

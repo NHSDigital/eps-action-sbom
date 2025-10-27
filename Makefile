@@ -6,7 +6,7 @@ install:
 	asdf install
 
 test:
-	bats test/test.bats
+	PATH=$PATH:test/bats/bin bats test/test.bats
 
 lint:
 	shellcheck *.sh

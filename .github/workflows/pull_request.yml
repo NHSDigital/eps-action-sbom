@@ -27,10 +27,12 @@ jobs:
           echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
 
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@4a6d03ad51516eddc448daf454805f85fe2025b9
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@extra_installs
     needs: [get_asdf_version]
     with:
       asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      installExtraOSLevelPackages: true
+      extraOsLevelPackagesToInstall: "bats,bats-assert,bats-support,bats-file,liblzma-dev,libyaml-dev,libbz2-dev,libreadline-dev,libsqlite3-dev"
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

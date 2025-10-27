@@ -1,8 +1,6 @@
 .PHONY: install build test publish release submodule_update check-licenses clean
 
 install:
-	sudo apt-get update
-	sudo apt-get install -y bats
 	git submodule init
 	git submodule update
 	asdf install

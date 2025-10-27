@@ -1,4 +1,13 @@
-FROM ubuntu:24.04
+FROM ubuntu:22.04
+
+ARG TARGETARCH
+ENV TARGETARCH=${TARGETARCH}
+
+ARG ASDF_VERSION
+COPY .tool-versions.asdf /tmp/.tool-versions.asdf
+
+# Add amd64 architecture if on arm64
+RUN if [ "$TARGETARCH" == "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then dpkg --add-architecture amd64; fi
 
 # Create a non-root user with sudo privileges
 RUN useradd -ms /bin/bash eps-sbom-user && \
@@ -18,17 +27,23 @@ RUN apt-get update \
     xz-utils tk-dev liblzma-dev libyaml-dev \
     python3 python3-pip python3-dev
 
+ # Install Syft
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/8be463911ce718ff70179ded9a2a4dd37549d374/install.sh | sh -s -- -b /usr/bin
+
+# Install Grype
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/ad9579a0bbf558257e2b6564fef21079429b16e2/install.sh | sh -s -- -b /usr/bin
+
+# Install ASDF
+RUN ASDF_VERSION=$(awk '!/^#/ && NF {print $1; exit}' /tmp/.tool-versions.asdf) && \
+    wget -O /tmp/asdf.tar.gz https://github.com/asdf-vm/asdf/releases/download/v${ASDF_VERSION}/asdf-v${ASDF_VERSION}-linux-amd64.tar.gz; \
+    tar -xvzf /tmp/asdf.tar.gz; \
+    mv asdf /usr/bin
+
 # Switch to the new user
 USER eps-sbom-user
 WORKDIR /home/eps-sbom-user
 
-# Install ASDF
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
-    echo '. /home/eps-sbom-user/.asdf/asdf.sh' >> ~/.bashrc; \
-    echo '. /home/eps-sbom-user/.asdf/completions/asdf.bash' >> ~/.bashrc; \
-    echo 'PATH="$PATH:/home/eps-sbom-user/.asdf/bin/"' >> ~/.bashrc;
-
-ENV PATH="$PATH:/home/eps-sbom-user/.asdf/bin/"
+ENV PATH="$PATH:/home/eps-sbom-user/.asdf/shims/"
 
 # Install ASDF plugins
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \

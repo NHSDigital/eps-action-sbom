@@ -20,7 +20,7 @@ RUN apt-get update \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev liblzma-dev libyaml-dev git
 
-    # Download correct AWS CLI for arch
+# Download correct AWS CLI for arch
 RUN if [ "$TARGETARCH" = "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then \
       wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip"; \
     else \

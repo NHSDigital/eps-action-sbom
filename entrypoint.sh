@@ -33,26 +33,6 @@ fi
 # Run make install
 make install
 
-# Install Syft
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa1a2369912d76304a79/install.sh | sh -s -- -b "$HOME"/bin
-
-# Install Grype
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b "$HOME"/bin
-
-# Ensure syft, grype, and jq are in PATH
-export PATH="$HOME/bin:$PATH"
-
-# Install jq if not already installed
-if ! command -v jq > /dev/null; then
-  echo "Installing jq..."
-  JQ_URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
-  curl -L -o "$HOME/bin/jq" "$JQ_URL"
-  chmod +x "$HOME/bin/jq"
-  echo "jq installed."
-else
-  echo "jq is already installed."
-fi
-
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then
   echo "Generating SBOM for NPM packages..."
@@ -71,6 +51,13 @@ fi
 if [ -f "go.mod" ] || [ -f "go.sum" ] || [ -d "vendor" ] || ls ./*.go 1> /dev/null 2>&1; then
   echo "Generating SBOM for Go packages..."
   syft -o syft-json --select-catalogers "go" dir:. > "sbom-golang.json"
+  echo "Done"
+fi
+
+# Generate SBOMs for Java packages
+if [ -f "pom.xml" ] || [ -d "src/main/java" ]; then
+  echo "Generating SBOM for Java packages..."
+  syft -o syft-json --select-catalogers "maven" dir:. > "sbom-java.json"
   echo "Done"
 fi
 

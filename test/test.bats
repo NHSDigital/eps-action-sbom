@@ -49,7 +49,7 @@ teardown() {
     cp test/.tool-versions test/no-issues/no-content/.tool-versions
     cp test/Makefile test/no-issues/no-content/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/no-content:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/no-content:/working eps-sbom
     assert_success
 }
 
@@ -57,7 +57,7 @@ teardown() {
     cp test/.tool-versions test/no-issues/npm-only/.tool-versions
     cp test/Makefile test/no-issues/npm-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-only:/working eps-sbom
 
     assert_file_exist test/no-issues/npm-only/sbom-npm.json
 

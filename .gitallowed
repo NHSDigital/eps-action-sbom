@@ -3,3 +3,6 @@ hash\s*=\s*"(sha256:[a-f0-9]{64})"
 .*poetry\.lock.*
 .*pyproject\.toml.*
 .*mindsdb==23.12.4.1.*
+
+# Java corretto is not a secret
+.*java corretto.*

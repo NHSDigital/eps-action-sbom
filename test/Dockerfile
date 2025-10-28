@@ -51,7 +51,7 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
 
 # Pre-build the tool versions we'll use, so we don't have to download it every time.
 WORKDIR /build
-COPY ../test/.tool-versions .
+COPY .tool-versions .
 RUN asdf install
 
 # Set the workdir to what we'll actually use

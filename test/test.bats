@@ -47,7 +47,7 @@ teardown() {
 
 # bats test_tags=no_content
 @test "No content allows SBOM to execute" {
-    cp test/.tool-versions test/no-issues/no-content/.tool-versions
+    cp .tool-versions test/no-issues/no-content/.tool-versions
     cp test/Makefile test/no-issues/no-content/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/no-content:/working eps-sbom
@@ -56,7 +56,7 @@ teardown() {
 
 # bats test_tags=issue_free, npm
 @test "Can generate an issue-free SBOM for NPM" {
-    cp test/.tool-versions test/no-issues/npm-only/.tool-versions
+    cp .tool-versions test/no-issues/npm-only/.tool-versions
     cp test/Makefile test/no-issues/npm-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-only:/working eps-sbom
@@ -69,7 +69,7 @@ teardown() {
 
 # bats test_tags=issue_free, python
 @test "Can generate an issue-free SBOM for Pip" {    
-    cp test/.tool-versions test/no-issues/python-pip-only/.tool-versions
+    cp .tool-versions test/no-issues/python-pip-only/.tool-versions
     cp test/Makefile test/no-issues/python-pip-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-only:/working eps-sbom
@@ -81,7 +81,7 @@ teardown() {
 
 # bats test_tags=issue_free, python
 @test "Can generate an issue-free SBOM for Poetry" {
-    cp test/.tool-versions test/no-issues/python-poetry-only/.tool-versions
+    cp .tool-versions test/no-issues/python-poetry-only/.tool-versions
     cp test/Makefile test/no-issues/python-poetry-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-poetry-only:/working eps-sbom
@@ -93,7 +93,7 @@ teardown() {
 
 # bats test_tags=issue_free, python, npm
 @test "Can generate issue-free SBOM for NPM and Pip" {
-    cp test/.tool-versions test/no-issues/npm-plus-pip/.tool-versions
+    cp .tool-versions test/no-issues/npm-plus-pip/.tool-versions
     cp test/Makefile test/no-issues/npm-plus-pip/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
@@ -104,7 +104,7 @@ teardown() {
 
 # bats test_tags=issue_free, python, npm
 @test "Can generate issue-free SBOM for NPM and poetry" {
-    cp test/.tool-versions test/no-issues/npm-plus-poetry/.tool-versions
+    cp .tool-versions test/no-issues/npm-plus-poetry/.tool-versions
     cp test/Makefile test/no-issues/npm-plus-poetry/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-poetry:/working eps-sbom
@@ -115,7 +115,7 @@ teardown() {
 
 # bats test_tags=issue_free, golang
 @test "Can generate issue-free SBOM for golang" {
-    cp test/.tool-versions test/no-issues/golang/.tool-versions
+    cp .tool-versions test/no-issues/golang/.tool-versions
     cp test/Makefile test/no-issues/golang/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/golang:/working eps-sbom
@@ -128,7 +128,7 @@ teardown() {
 
 # bats test_tags=issue, golang
 @test "Fails when a known golang threat is encountered" {
-    cp test/.tool-versions test/issues/golang/.tool-versions
+    cp .tool-versions test/issues/golang/.tool-versions
     cp test/Makefile test/issues/golang/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/golang:/working eps-sbom
@@ -140,7 +140,7 @@ teardown() {
 
 # bats test_tags=issue, npm
 @test "Fails when a known NPM threat is encountered" {
-    cp test/.tool-versions test/issues/npm-only/.tool-versions
+    cp .tool-versions test/issues/npm-only/.tool-versions
     cp test/Makefile test/issues/npm-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/npm-only:/working eps-sbom
@@ -150,7 +150,7 @@ teardown() {
 
 # bats test_tags=ignored, npm
 @test "Passes when an ignored issues is encountered - npm" {
-    cp test/.tool-versions test/issues/ignore-npm-issue/.tool-versions
+    cp .tool-versions test/issues/ignore-npm-issue/.tool-versions
     cp test/Makefile test/issues/ignore-npm-issue/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-npm-issue:/working eps-sbom
@@ -161,7 +161,7 @@ teardown() {
 
 # bats test_tags=issue, python
 @test "Fails when a known python pip threat is encountered" {
-    cp test/.tool-versions test/issues/python-pip-only/.tool-versions
+    cp .tool-versions test/issues/python-pip-only/.tool-versions
     cp test/Makefile test/issues/python-pip-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/working eps-sbom
@@ -172,7 +172,7 @@ teardown() {
 
 # bats test_tags=ignored, python
 @test "Passes when an ignored issue is encountered - python pip" {
-    cp test/.tool-versions test/issues/ignore-pip-issue/.tool-versions
+    cp .tool-versions test/issues/ignore-pip-issue/.tool-versions
     cp test/Makefile test/issues/ignore-pip-issue/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/working eps-sbom
@@ -183,7 +183,7 @@ teardown() {
 
 # bats test_tags=issue, python
 @test "Fails when a known python poetry threat is encountered" {
-    cp test/.tool-versions test/issues/python-poetry-only/.tool-versions
+    cp .tool-versions test/issues/python-poetry-only/.tool-versions
     cp test/Makefile test/issues/python-poetry-only/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-poetry-only:/working eps-sbom
@@ -195,7 +195,7 @@ teardown() {
 
 # bats test_tags=issue, python
 @test "Passes when an ignored issue is encountered - python poetry" {
-    cp test/.tool-versions test/issues/ignore-poetry-issue/.tool-versions
+    cp .tool-versions test/issues/ignore-poetry-issue/.tool-versions
     cp test/Makefile test/issues/ignore-poetry-issue/Makefile
 
     docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/working eps-sbom

@@ -3,10 +3,9 @@
 install:
 	git submodule init
 	git submodule update
-	asdf install
 
 test:
-	PATH=$PATH:test/bats/bin bats test/test.bats
+	PATH=$$PATH:test/bats/bin bats test/test.bats
 
 lint:
 	shellcheck *.sh

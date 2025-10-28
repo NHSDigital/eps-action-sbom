@@ -27,11 +27,6 @@ RUN apt-get update \
     xz-utils tk-dev liblzma-dev libyaml-dev \
     python3 python3-pip python3-dev
 
- # Install Syft
-RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/8be463911ce718ff70179ded9a2a4dd37549d374/install.sh | sh -s -- -b /usr/bin
-
-# Install Grype
-RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/ad9579a0bbf558257e2b6564fef21079429b16e2/install.sh | sh -s -- -b /usr/bin
 
 # Install ASDF
 RUN ASDF_VERSION=$(awk '!/^#/ && NF {print $1; exit}' /tmp/.tool-versions.asdf) && \

@@ -45,6 +45,7 @@ teardown() {
 }
 
 
+# bats test_tags=no_content
 @test "No content allows SBOM to execute" {
     cp test/.tool-versions test/no-issues/no-content/.tool-versions
     cp test/Makefile test/no-issues/no-content/Makefile
@@ -53,6 +54,7 @@ teardown() {
     assert_success
 }
 
+# bats test_tags=issue_free, npm
 @test "Can generate an issue-free SBOM for NPM" {
     cp test/.tool-versions test/no-issues/npm-only/.tool-versions
     cp test/Makefile test/no-issues/npm-only/Makefile
@@ -65,43 +67,58 @@ teardown() {
     assert_file_not_exist test/no-issues/npm-only/sbom-python.json
 }
 
+# bats test_tags=issue_free, python
 @test "Can generate an issue-free SBOM for Pip" {    
     cp test/.tool-versions test/no-issues/python-pip-only/.tool-versions
     cp test/Makefile test/no-issues/python-pip-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-pip-only:/working eps-sbom
 
     assert_file_exist test/no-issues/python-pip-only/sbom-python.json
 
     assert_file_not_exist test/no-issues/python-pip-only/sbom-npm.json
 }
 
+# bats test_tags=issue_free, python
 @test "Can generate an issue-free SBOM for Poetry" {
     cp test/.tool-versions test/no-issues/python-poetry-only/.tool-versions
     cp test/Makefile test/no-issues/python-poetry-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-poetry-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/python-poetry-only:/working eps-sbom
 
     assert_file_exist test/no-issues/python-poetry-only/sbom-python.json
     
     assert_file_not_exist test/no-issues/python-poetry-only/sbom-npm.json
 }
 
+# bats test_tags=issue_free, python, npm
 @test "Can generate issue-free SBOM for NPM and Pip" {
     cp test/.tool-versions test/no-issues/npm-plus-pip/.tool-versions
     cp test/Makefile test/no-issues/npm-plus-pip/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-pip:/working eps-sbom
     
     assert_file_exist test/no-issues/npm-plus-pip/sbom-python.json
     assert_file_exist test/no-issues/npm-plus-pip/sbom-npm.json
 }
 
+# bats test_tags=issue_free, python, npm
+@test "Can generate issue-free SBOM for NPM and poetry" {
+    cp test/.tool-versions test/no-issues/npm-plus-poetry/.tool-versions
+    cp test/Makefile test/no-issues/npm-plus-poetry/Makefile
+
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/npm-plus-poetry:/working eps-sbom
+    
+    assert_file_exist test/no-issues/npm-plus-poetry/sbom-python.json
+    assert_file_exist test/no-issues/npm-plus-poetry/sbom-npm.json
+}
+
+# bats test_tags=issue_free, golang
 @test "Can generate issue-free SBOM for golang" {
     cp test/.tool-versions test/no-issues/golang/.tool-versions
     cp test/Makefile test/no-issues/golang/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/golang:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/no-issues/golang:/working eps-sbom
     
     assert_file_exist test/no-issues/golang/sbom-golang.json
 
@@ -109,72 +126,79 @@ teardown() {
     assert_file_not_exist test/no-issues/golang/sbom-npm.json
 }
 
+# bats test_tags=issue, golang
 @test "Fails when a known golang threat is encountered" {
     cp test/.tool-versions test/issues/golang/.tool-versions
     cp test/Makefile test/issues/golang/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/golang:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/golang:/working eps-sbom
     assert_failure
     assert_output --partial "GHSA-p744-4q6p-hvc2"
     assert_output --partial "GHSA-66p8-j459-rq63"
     assert_output --partial "GHSA-494h-9924-xww9"
 }
 
+# bats test_tags=issue, npm
 @test "Fails when a known NPM threat is encountered" {
     cp test/.tool-versions test/issues/npm-only/.tool-versions
     cp test/Makefile test/issues/npm-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/npm-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/npm-only:/working eps-sbom
     assert_failure
     assert_output --partial "GHSA-8rmg-jf7p-4p22"
 }
 
+# bats test_tags=ignored, npm
 @test "Passes when an ignored issues is encountered - npm" {
     cp test/.tool-versions test/issues/ignore-npm-issue/.tool-versions
     cp test/Makefile test/issues/ignore-npm-issue/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-npm-issue:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-npm-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-8rmg-jf7p-4p22"
     assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
+# bats test_tags=issue, python
 @test "Fails when a known python pip threat is encountered" {
     cp test/.tool-versions test/issues/python-pip-only/.tool-versions
     cp test/Makefile test/issues/python-pip-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-pip-only:/working eps-sbom
     assert_failure
 
     assert_output --partial "GHSA-5p8v-58qm-c7fp"
 }
 
+# bats test_tags=ignored, python
 @test "Passes when an ignored issue is encountered - python pip" {
     cp test/.tool-versions test/issues/ignore-pip-issue/.tool-versions
     cp test/Makefile test/issues/ignore-pip-issue/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-pip-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-5p8v-58qm-c7fp"
     assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
+# bats test_tags=issue, python
 @test "Fails when a known python poetry threat is encountered" {
     cp test/.tool-versions test/issues/python-poetry-only/.tool-versions
     cp test/Makefile test/issues/python-poetry-only/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-poetry-only:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/python-poetry-only:/working eps-sbom
     assert_failure
 
     assert_output --partial "GHSA-9298-4cf8-g4wj"
     assert_output --partial "GHSA-5wvp-7f3h-6wmm"
 }
 
+# bats test_tags=issue, python
 @test "Passes when an ignored issue is encountered - python poetry" {
     cp test/.tool-versions test/issues/ignore-poetry-issue/.tool-versions
     cp test/Makefile test/issues/ignore-poetry-issue/Makefile
 
-    run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/working eps-sbom
+    docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/working eps-sbom
     assert_success
     assert_output --partial "GHSA-4jcv-vp96-94xr"
     assert_output --partial "This is a test to see if ignoring the issue works"

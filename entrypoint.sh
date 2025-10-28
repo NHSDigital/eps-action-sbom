@@ -33,6 +33,15 @@ fi
 # Run make install
 make install
 
+ # Install Syft
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/8be463911ce718ff70179ded9a2a4dd37549d374/install.sh | sh -s -- -b "$HOME"/bin
+
+# Install Grype
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/ad9579a0bbf558257e2b6564fef21079429b16e2/install.sh | sh -s -- -b "$HOME"/bin
+
+# Ensure syft, grype, and jq are in PATH
+export PATH="$HOME/bin:$PATH"
+
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then
   echo "Generating SBOM for NPM packages..."
@@ -55,7 +64,7 @@ if [ -f "go.mod" ] || [ -f "go.sum" ] || [ -d "vendor" ] || ls ./*.go 1> /dev/nu
 fi
 
 # Generate SBOMs for Java packages
-if [ -f "pom.xml" ] || [ -d "src/main/java" ]; then
+if [ -f "pom.xml" ]; then
   echo "Generating SBOM for Java packages..."
   syft -o syft-json --select-catalogers "maven" dir:. > "sbom-java.json"
   echo "Done"

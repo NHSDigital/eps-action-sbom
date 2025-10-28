@@ -2,12 +2,13 @@
 name = "test-data"
 version = "0.1.0"
 description = ""
-authors = ["Jim Wild <james.wild6@nhs.net>"]
+authors = ["EPS Team"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "3.8.15"
-mindsdb = "23.12.4.1"
+python = ">=3.10,<3.14"
+picklescan = "0.0.20"
 
 
 [build-system]

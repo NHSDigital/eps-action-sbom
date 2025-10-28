@@ -1,17 +1,20 @@
 .PHONY: install build test publish release submodule_update check-licenses clean
 
 install:
-	sudo apt-get update
-	sudo apt-get install -y bats
 	git submodule init
 	git submodule update
-	asdf install
+	poetry install
+	poetry run pre-commit install
 
 test:
-	bats test/test.bats
+	PATH=$$PATH:test/bats/bin bats --print-output-on-failure test/test.bats
 
-lint:
+lint: lint-githubactions
 	shellcheck *.sh
+
+lint-githubactions:
+	actionlint
+
 
 clean:
 	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;
@@ -25,3 +28,4 @@ clean:
 		-o -name 'pyproject.toml' \
 		-o -name 'poetry.lock' \
 	\) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;
+	rm -rf .test_run

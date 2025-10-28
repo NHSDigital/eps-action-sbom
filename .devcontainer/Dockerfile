@@ -1,8 +1,13 @@
 FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
 
-# Workaround for remoteuser id issue
-# https://github.com/microsoft/vscode-remote-release/issues/10030
-# RUN userdel -r ubuntu; usermod -u 1001 vscode; groupmod -g 1000 vscode
+ARG TARGETARCH
+ENV TARGETARCH=${TARGETARCH}
+
+ARG ASDF_VERSION
+COPY .tool-versions.asdf /tmp/.tool-versions.asdf
+
+# Add amd64 architecture if on arm64
+RUN if [ "$TARGETARCH" == "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then dpkg --add-architecture amd64; fi
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
@@ -13,16 +18,37 @@ RUN apt-get update \
     jq apt-transport-https ca-certificates gnupg-agent \
     software-properties-common bash-completion python3-pip make libbz2-dev \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev liblzma-dev libyaml-dev bats git
+    xz-utils tk-dev liblzma-dev libyaml-dev git
+
+# Download correct AWS CLI for arch
+RUN if [ "$TARGETARCH" = "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then \
+      wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip"; \
+    else \
+      wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"; \
+    fi && \
+    unzip /tmp/awscliv2.zip -d /tmp/aws-cli && \
+    /tmp/aws-cli/aws/install && \
+    rm /tmp/awscliv2.zip && rm -rf /tmp/aws-cli
+
+# Download correct SAM CLI for arch
+RUN if [ "$TARGETARCH" = "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then \
+      wget -O /tmp/aws-sam-cli.zip "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-arm64.zip"; \
+    else \
+      wget -O /tmp/aws-sam-cli.zip "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip"; \
+    fi && \
+    unzip /tmp/aws-sam-cli.zip -d /tmp/aws-sam-cli && \
+    /tmp/aws-sam-cli/install && \
+    rm /tmp/aws-sam-cli.zip && rm -rf /tmp/aws-sam-cli
+
+# Install ASDF
+RUN ASDF_VERSION=$(awk '!/^#/ && NF {print $1; exit}' /tmp/.tool-versions.asdf) && \
+    wget -O /tmp/asdf.tar.gz https://github.com/asdf-vm/asdf/releases/download/v${ASDF_VERSION}/asdf-v${ASDF_VERSION}-linux-amd64.tar.gz; \
+    tar -xvzf /tmp/asdf.tar.gz; \
+    mv asdf /usr/bin
 
 USER vscode
 
-# Install ASDF
-RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1; \
-    echo '. $HOME/.asdf/asdf.sh' >> ~/.bashrc; \
-    echo '. $HOME/.asdf/completions/asdf.bash' >> ~/.bashrc; 
-
-ENV PATH="$PATH:/home/vscode/.asdf/bin/"
+ENV PATH="$PATH:/home/vscode/.asdf/shims/:PATH=:/workspaces/eps-action-sbom/test/bats/bin"
 
 # Install ASDF plugins
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
@@ -31,9 +57,12 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add golang; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add poetry https://github.com/asdf-community/asdf-poetry.git; \
-    asdf plugin add golang https://github.com/kennyp/asdf-golang.git;
+    asdf plugin add golang https://github.com/kennyp/asdf-golang.git; \
+    asdf plugin add java; \
+    asdf plugin add maven;
 
 WORKDIR /workspaces/eps-action-sbom
 COPY .tool-versions /home/vscode/.tool-versions
 
-RUN asdf install
+RUN asdf install python; \
+    asdf install

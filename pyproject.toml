@@ -1,0 +1,27 @@
+[project]
+name = "eps-sbom-check"
+
+[tool.poetry]
+name = "eps-sbom-check"
+version = "0.0.1-alpha"
+description = "github action for running sbom checks"
+license = "MIT"
+authors = [
+    "EPS"
+]
+readme = "README.md"
+repository = "https://github.com/NHSDigital/eps-FHIR-validator-lambda"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+
+[tool.poetry.group.dev.dependencies]
+pip-licenses = "^5.0.0"
+pre-commit = "^4.1.0"
+
+[tool.poetry.scripts]
+
+[build-system]
+requires = ["poetry>=1.6"]
+build-backend = "poetry.masonry.api"

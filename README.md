@@ -54,3 +54,9 @@ jobs:
       sbom_scans:
         uses: NHSDigital/eps-action-sbom/.github/workflows/sbom_workflow.yml@<VERSION TAG>
 ```
+
+### Pull request quality check failures
+
+If a pull request fails in the quality checks action on the test job, it is likely that one of no-issues packages now has a vulnerability.   
+To fix this, in the test/no-issues folder, remove the suffix _no-check from the package file, update the dependency in the file to the latest version and update the lock file for the package (eg npm install, poetry lock). Add back in the suffix and commit and push the change.
+  

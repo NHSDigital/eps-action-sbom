@@ -1,7 +1,7 @@
 install:
 	@if [ -f requirements.txt ]; then \
 		echo "Installing Python dependencies from requirements.txt..."; \
-		pip install -r requirements.txt --break-system-packages; \
+		pip install -r requirements.txt; \
 	fi
 
 	@if [ -f poetry.lock ] || [ -f pyproject.toml ]; then \
@@ -22,6 +22,11 @@ install:
 	elif ls *.go 1> /dev/null 2>&1; then \
 		echo "Installing Go dependencies for non-module project..."; \
 		go get ./...; \
+	fi
+
+	@if [ -f pom.xml ]; then \
+		echo "Installing Java dependencies from pom.xml..."; \
+		mvn install; \
 	fi
 
 .PHONY: install

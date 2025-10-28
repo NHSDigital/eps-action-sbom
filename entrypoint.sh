@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# This script generates SBOMs for various package types in the current directory,
+# scans them for vulnerabilities using Grype, and compares the results against
+# a list of ignored security issues.
+
+# It is called by action.yml and used by quality checks workflow
+# It is also used in the bats tests to verify functionality.
+
 set -e
 
 # Remove any existing SBOMs
@@ -31,27 +38,17 @@ else
 fi
 
 # Run make install
+echo "Running 'make install'..."
 make install
 
-# Install Syft
-curl -sSfL https://raw.githubusercontent.com/anchore/syft/c2c8c793d2ba6bee90b5fa1a2369912d76304a79/install.sh | sh -s -- -b "$HOME"/bin
+ # Install Syft
+curl -sSfL https://raw.githubusercontent.com/anchore/syft/8be463911ce718ff70179ded9a2a4dd37549d374/install.sh | sh -s -- -b "$HOME"/bin
 
 # Install Grype
-curl -sSfL https://raw.githubusercontent.com/anchore/grype/71d05d2509a4f4a9d34a0de5cb29f55ddb6f72c1/install.sh | sh -s -- -b "$HOME"/bin
+curl -sSfL https://raw.githubusercontent.com/anchore/grype/ad9579a0bbf558257e2b6564fef21079429b16e2/install.sh | sh -s -- -b "$HOME"/bin
 
 # Ensure syft, grype, and jq are in PATH
 export PATH="$HOME/bin:$PATH"
-
-# Install jq if not already installed
-if ! command -v jq > /dev/null; then
-  echo "Installing jq..."
-  JQ_URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
-  curl -L -o "$HOME/bin/jq" "$JQ_URL"
-  chmod +x "$HOME/bin/jq"
-  echo "jq installed."
-else
-  echo "jq is already installed."
-fi
 
 # Generate SBOMs for NPM packages
 if [ -f "package.json" ]; then
@@ -71,6 +68,13 @@ fi
 if [ -f "go.mod" ] || [ -f "go.sum" ] || [ -d "vendor" ] || ls ./*.go 1> /dev/null 2>&1; then
   echo "Generating SBOM for Go packages..."
   syft -o syft-json --select-catalogers "go" dir:. > "sbom-golang.json"
+  echo "Done"
+fi
+
+# Generate SBOMs for Java packages
+if [ -f "pom.xml" ]; then
+  echo "Generating SBOM for Java packages..."
+  syft -o syft-json --select-catalogers "maven" dir:. > "sbom-java.json"
   echo "Done"
 fi
 

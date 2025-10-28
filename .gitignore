@@ -10,3 +10,4 @@ test/*issues/*/pyproject.toml
 test/*issues/*/poetry.lock
 test/*issues/*/go.sum
 test/*issues/*/go.mod
+.test_run

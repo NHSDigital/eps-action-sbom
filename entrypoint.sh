@@ -38,6 +38,7 @@ else
 fi
 
 # Run make install
+echo "Running 'make install'..."
 make install
 
  # Install Syft

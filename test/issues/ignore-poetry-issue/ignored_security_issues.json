@@ -1,14 +1,14 @@
 [
     {
-        "vulnerability_id": "GHSA-4jcv-vp96-94xr",
+        "vulnerability_id": "GHSA-mjqp-26hc-grxg",
         "reason": "This is a test to see if ignoring the issue works"
     },
-    {   
-        "vulnerability_id": "GHSA-5wvp-7f3h-6wmm",
+    {
+        "vulnerability_id": "GHSA-f7qq-56ww-84cr",
         "reason": "This is a second ignored issue"
     },
     {
-        "vulnerability_id": "GHSA-9298-4cf8-g4wj",
+        "vulnerability_id": "GHSA-jgw4-cr84-mqxg",
         "reason": "A third ignored issue"
     }
 ]

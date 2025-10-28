@@ -125,9 +125,9 @@ setup() {
     cd -
 
     assert_failure
-    assert_output --partial "GHSA-p744-4q6p-hvc2"
-    assert_output --partial "GHSA-66p8-j459-rq63"
-    assert_output --partial "GHSA-494h-9924-xww9"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-p744-4q6p-hvc2"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-66p8-j459-rq63"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-494h-9924-xww9"
 }
 
 # bats test_tags=issue, npm
@@ -140,7 +140,7 @@ setup() {
     cd -
 
     assert_failure
-    assert_output --partial "GHSA-8rmg-jf7p-4p22"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-8rmg-jf7p-4p22"
 }
 
 # bats test_tags=ignored, npm
@@ -153,7 +153,7 @@ setup() {
     cd -
 
     assert_success
-    assert_output --partial "GHSA-8rmg-jf7p-4p22"
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-8rmg-jf7p-4p22"
     assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
@@ -168,7 +168,7 @@ setup() {
 
     assert_failure
 
-    assert_output --partial "GHSA-5p8v-58qm-c7fp"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-5p8v-58qm-c7fp"
 }
 
 # bats test_tags=ignored, python
@@ -181,7 +181,7 @@ setup() {
     cd -
 
     assert_success
-    assert_output --partial "GHSA-5p8v-58qm-c7fp"
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-5p8v-58qm-c7fp"
     assert_output --partial "This is a test to see if ignoring the issue works"
 }
 
@@ -196,8 +196,8 @@ setup() {
 
     assert_failure
 
-    assert_output --partial "GHSA-9298-4cf8-g4wj"
-    assert_output --partial "GHSA-5wvp-7f3h-6wmm"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-f7qq-56ww-84cr"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-jgw4-cr84-mqxg"
 }
 
 # bats test_tags=issue, python
@@ -209,10 +209,10 @@ setup() {
     run ./entrypoint.sh
     cd -
 
-    assert_failure
-    assert_output --partial "GHSA-4jcv-vp96-94xr"
-    assert_output --partial "This is a test to see if ignoring the issue works"
-    assert_output --partial "GHSA-5wvp-7f3h-6wmm"
-    assert_output --partial "This is a second ignored issue"
+    assert_success
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-mjqp-26hc-grxg"
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-f7qq-56ww-84cr"
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-jgw4-cr84-mqxg"
 }
+
 

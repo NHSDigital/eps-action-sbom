@@ -5,7 +5,7 @@ install:
 	git submodule update
 
 test:
-	PATH=$$PATH:test/bats/bin bats test/test.bats
+	PATH=$$PATH:test/bats/bin bats --print-output-on-failure test/test.bats
 
 lint:
 	shellcheck *.sh

@@ -48,7 +48,7 @@ RUN ASDF_VERSION=$(awk '!/^#/ && NF {print $1; exit}' /tmp/.tool-versions.asdf) 
 
 USER vscode
 
-ENV PATH="$PATH:/home/vscode/.asdf/shims/"
+ENV PATH="$PATH:/home/vscode/.asdf/shims/:PATH=:/workspaces/eps-action-sbom/test/bats/bin"
 
 # Install ASDF plugins
 RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \

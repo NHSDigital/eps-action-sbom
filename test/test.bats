@@ -12,6 +12,10 @@ setup_file() {
 # teardown() {
 # }
 
+teardown_file() {
+    # Clean up after all tests have run
+    rm -rf .test_run
+}
 setup() {
     load 'test_helper/bats-support/load'
     load 'test_helper/bats-assert/load'

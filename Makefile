@@ -4,12 +4,17 @@ install:
 	git submodule init
 	git submodule update
 	poetry install
+	poetry run pre-commit install
 
 test:
 	PATH=$$PATH:test/bats/bin bats --print-output-on-failure test/test.bats
 
-lint:
+lint: lint-githubactions
 	shellcheck *.sh
+
+lint-githubactions:
+	actionlint
+
 
 clean:
 	find test/*issues -type d -name 'node_modules' -exec rm -rf {} \;

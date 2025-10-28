@@ -3,6 +3,7 @@
 install:
 	git submodule init
 	git submodule update
+	poetry install
 
 test:
 	PATH=$$PATH:test/bats/bin bats --print-output-on-failure test/test.bats
@@ -22,3 +23,4 @@ clean:
 		-o -name 'pyproject.toml' \
 		-o -name 'poetry.lock' \
 	\) -exec sh -c 'mv "$1" "${1}_no-check"' _ {} \;
+	rm -rf .test_run

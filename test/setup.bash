@@ -25,6 +25,7 @@ find .test_run/*issues/* -type f \( \
     -o -name 'poetry.lock_no-check' \
     -o -name 'go.sum_no-check' \
     -o -name 'go.mod_no-check' \
+    -o -name 'pom.xml_no-check' \
 \) -exec sh -c 'mv "$1" "${1%_no-check}"' _ {} \;
 
 find .test_run/*issues -type d -name 'node_modules' -exec rm -rf {} \;

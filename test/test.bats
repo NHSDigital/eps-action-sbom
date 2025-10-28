@@ -115,6 +115,22 @@ setup() {
     assert_file_not_exist ${TEST_DIRECTORY}/sbom-npm.json
 }
 
+# bats test_tags=issue_free, java
+@test "Can generate issue-free SBOM for java" {
+    TEST_DIRECTORY=".test_run/no-issues/java"
+    cp entrypoint.sh ${TEST_DIRECTORY}/entrypoint.sh
+
+    cd ${TEST_DIRECTORY}
+    run ./entrypoint.sh
+    cd -
+
+    assert_success
+    assert_file_exist ${TEST_DIRECTORY}/sbom-java.json
+
+    assert_file_not_exist ${TEST_DIRECTORY}/sbom-python.json
+    assert_file_not_exist ${TEST_DIRECTORY}/sbom-npm.json
+}
+
 # bats test_tags=issue, golang
 @test "Fails when a known golang threat is encountered" {
     TEST_DIRECTORY=".test_run/issues/golang"
@@ -216,3 +232,30 @@ setup() {
 }
 
 
+# bats test_tags=issue, java
+@test "Fails when a known java threat is encountered" {
+    TEST_DIRECTORY=".test_run/issues/java"
+    cp entrypoint.sh ${TEST_DIRECTORY}/entrypoint.sh
+
+    cd ${TEST_DIRECTORY}
+    run ./entrypoint.sh
+    cd -
+
+    assert_failure
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-jfh8-c2jp-5v3q"
+    assert_output --partial "Error: Critical vulnerability found that is not in the ignore list: GHSA-7rjr-3q55-vv33"
+}
+
+# bats test_tags=issue, java
+@test "Passes when an ignored issue is encountered - java" {
+    TEST_DIRECTORY=".test_run/issues/ignore-java"
+    cp entrypoint.sh ${TEST_DIRECTORY}/entrypoint.sh
+
+    cd ${TEST_DIRECTORY}
+    run ./entrypoint.sh
+    cd -
+
+    assert_success
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-jfh8-c2jp-5v3q"
+    assert_output --partial "Warning: Ignored vulnerability found: GHSA-7rjr-3q55-vv33"
+}

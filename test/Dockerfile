@@ -1,10 +1,11 @@
 FROM ubuntu:22.04
 
+# This dockerfile is used to build the test environment for the bats tests.
 ARG TARGETARCH
 ENV TARGETARCH=${TARGETARCH}
 
 ARG ASDF_VERSION
-COPY .tool-versions.asdf /tmp/.tool-versions.asdf
+COPY ../.tool-versions.asdf /tmp/.tool-versions.asdf
 
 # Add amd64 architecture if on arm64
 RUN if [ "$TARGETARCH" == "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then dpkg --add-architecture amd64; fi
@@ -50,14 +51,14 @@ RUN asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
 
 # Pre-build the tool versions we'll use, so we don't have to download it every time.
 WORKDIR /build
-COPY test/.tool-versions .
+COPY ../test/.tool-versions .
 RUN asdf install
 
 # Set the workdir to what we'll actually use
 WORKDIR /working
 
 # Files to execute when the docker container starts up
-COPY entrypoint.sh /home/eps-sbom-user/entrypoint.sh
+COPY ../entrypoint.sh /home/eps-sbom-user/entrypoint.sh
 
 # Set the umask so that the files created by docker can be universally accessed. 
 # Lets the tests successfully teardown.

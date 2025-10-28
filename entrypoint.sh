@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# This script generates SBOMs for various package types in the current directory,
+# scans them for vulnerabilities using Grype, and compares the results against
+# a list of ignored security issues.
+
+# It is called by action.yml and used by quality checks workflow
+# It is also used in the bats tests to verify functionality.
+
 set -e
 
 # Remove any existing SBOMs

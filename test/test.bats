@@ -19,7 +19,7 @@ setup() {
 	find test/*issues -type f -name '.tool-versions' -exec rm -f {} \;
 	find test/*issues -type f -name 'Makefile*' -exec rm -f {} \;
 
-    docker build -t eps-sbom .
+    docker build -t eps-sbom -f test/Dockerfile .
 
     if [ -z $LOCAL_WORKSPACE_FOLDER ]; then
         LOCAL_WORKSPACE_FOLDER=$(pwd)

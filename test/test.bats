@@ -205,7 +205,7 @@ teardown() {
     cp test/Makefile test/issues/ignore-poetry-issue/Makefile
 
     run docker run -i --rm -v ${LOCAL_WORKSPACE_FOLDER}/test/issues/ignore-poetry-issue:/working eps-sbom
-    assert_success
+    assert_failure
     assert_output --partial "GHSA-4jcv-vp96-94xr"
     assert_output --partial "This is a test to see if ignoring the issue works"
     assert_output --partial "GHSA-5wvp-7f3h-6wmm"

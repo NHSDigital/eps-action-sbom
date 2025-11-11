@@ -35,7 +35,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   pr_title_format_check:
-    uses: NHSDigital/eps-workflow-semantic-release/.github/workflows/pr_title_check.yml@3ec4ca870572ef4c8308a83d08c488ff39788d82
+    uses: NHSDigital/eps-workflow-semantic-release/.github/workflows/pr_title_check.yml@c9767efede21c62863bc80d4f7ceebad2c95831e
 
   dependabot-auto-approve-and-merge:
     needs: quality_checks
